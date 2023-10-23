@@ -1,4 +1,8 @@
-﻿namespace MatrixCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
+
+namespace MatrixCore;
 
 public struct Vector4
 {
@@ -30,22 +34,36 @@ public struct Vector4
     {
         return letf.X * right.X + letf.Y * right.Y + letf.Z * right.Z;
     }
+    public static bool operator ==(Vector4 left, Vector4 right)
+    {
+        return left.Equals(right);
+    }
+    public static bool operator !=(Vector4 left, Vector4 right)
+    {
+        return !left.Equals(right);
+    }
+    
+    public static Vector4 Cross(Vector4 left, Vector4 right)
+    {
+        return new Vector4(
+                left.Y * right.Z - left.Z * right.Y,
+                left.Z * right.X - left.X * right.Z,
+                left.X * right.Y - left.Y * right.X,
+                1
+            );
+    }
 
-    public static Vector4 One => new Vector4(1, 1, 1, 1);
+
+    public static Vector4 One => new(1, 1, 1, 1);
 
     public float X { get; set; }
     public float Y { get; set; }
     public float Z { get; set; }
     public float W { get; set; }
     public float Magnitude => MathF.Sqrt(X * X + Y * Y + Z * Z);
-    public Vector4 Normalize => new(X / Magnitude, Y / Magnitude, Z / Magnitude);
+    public Vector4 Normalized => new(X / Magnitude, Y / Magnitude, Z / Magnitude);
 
-    public Vector4()
-    {
-        W = 1;
-        X = Y = Z = 0;
-    }
-    public Vector4(float x, float y, float z, float w = 1)
+    public Vector4(float x = 0, float y = 0, float z = 0, float w = 1)
     {
         X = x;
         Y = y;
@@ -63,5 +81,23 @@ public struct Vector4
         if (!showW)
             return $"({X:f},{Y:f},{Z:f})";
         return ToString();
+    }
+
+    public override bool Equals([NotNullWhen(true)] object? obj)
+    {
+        if (obj is not Vector4 vector)
+            return false;
+
+        if (vector.W != W)
+            vector /= (vector.W / W);
+
+        return MathTool.Appropriate(X, vector.X) 
+            && MathTool.Appropriate(Y, vector.Y)
+            && MathTool.Appropriate(Z, vector.Z);
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
     }
 }

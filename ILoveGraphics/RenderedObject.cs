@@ -5,11 +5,11 @@
         /// <summary>
         /// 物体的变换信息
         /// </summary>
-        public Transform Transform { get; init; }
+        public Transform Transform { get; } = new Transform();
         /// <summary>
         /// 物体模型
         /// </summary>
-        public Mesh Mesh { get; init; }
+        public Mesh Mesh { get; set; }
 
         public RenderedObject(Mesh mesh)
         {

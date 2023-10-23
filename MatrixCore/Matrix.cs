@@ -61,7 +61,7 @@ public struct Matrix
     public static Matrix operator *(Matrix left, Matrix right)
     {
         if (left.N != right.M)
-            throw new Exception();
+            throw new ArgumentException($"{left.M}X{left.N}的矩阵无法与{right.M}X{right.N}的矩阵进行乘法");
         var matrix = new Matrix(left.M, right.N);
         foreach (var (i, j) in matrix.All)
         {
@@ -96,7 +96,7 @@ public struct Matrix
     public static Vector4 operator *(Matrix matrix, Vector4 vector)
     {
         if (matrix.M != 4 && matrix.N != 4)
-            throw new Exception();
+            throw new ArgumentException("矩阵并非标准变换矩阵(4X4)");
         return new()
         {
             X = matrix[1, 1] * vector.X + matrix[1, 2] * vector.Y + matrix[1, 3] * vector.Z + matrix[1, 4] * vector.W,
@@ -135,7 +135,8 @@ public struct Matrix
     public static Matrix operator +(Matrix left, Matrix right)
     {
         if (left.M != right.M || left.N != right.N)
-            throw new Exception();
+            throw new ArgumentException("矩阵尺寸不匹配");
+
         foreach (var (i, j) in left.All)
         {
             left[i, j] += right[i, j];
@@ -204,11 +205,12 @@ public struct Matrix
     /// <returns></returns>
     public static Matrix RotationMatrixByX(float a)
     {
-        return new float[,] {
+        return new float[,] 
+        {
             { 1,      0,       0, 0 },
             { 0, Cos(a), -Sin(a), 0 },
             { 0, Sin(a),  Cos(a), 0 },
-            { 0,      0,       0, 1 } 
+            { 0,      0,       0, 1 }
         };
     }
     /// <summary>
@@ -218,11 +220,12 @@ public struct Matrix
     /// <returns></returns>
     public static Matrix RotationMatrixByY(float a)
     {
-        return new float[,] {
+        return new float[,] 
+        {
             { Cos(a), 0, Sin(a), 0 },
             {      0, 1,      0, 0 },
             {-Sin(a), 0, Cos(a), 0 },
-            {      0, 0,      0, 1 } 
+            {      0, 0,      0, 1 }
         };
     }
     /// <summary>
@@ -232,11 +235,12 @@ public struct Matrix
     /// <returns></returns>
     public static Matrix RotationMatrixByZ(float a)
     {
-        return new float[,] {
+        return new float[,] 
+        {
             { Cos(a), -Sin(a), 0, 0 },
             { Sin(a),  Cos(a), 0, 0 },
             {      0,       0, 1, 0 },
-            {      0,       0, 0, 1 } 
+            {      0,       0, 0, 1 }
         };
     }
     /// <summary>
@@ -268,11 +272,12 @@ public struct Matrix
     /// <returns></returns>
     public static Matrix TranslationMatrix(float dx, float dy, float dz)
     {
-        return new float[,] { 
+        return new float[,] 
+        {
             { 1, 0, 0, dx },
             { 0, 1, 0, dy },
             { 0, 0, 1, dz },
-            { 0, 0, 0, 1  } 
+            { 0, 0, 0, 1  }
         };
     }
     /// <summary>
@@ -295,11 +300,12 @@ public struct Matrix
     /// <returns></returns>
     public static Matrix ScaleMatrix(float x, float y, float z)
     {
-        return new float[,] { 
+        return new float[,] 
+        {
             { x, 0, 0, 0 },
             { 0, y, 0, 0 },
             { 0, 0, z, 0 },
-            { 0, 0, 0, 1 } 
+            { 0, 0, 0, 1 }
         };
     }
     /// <summary>

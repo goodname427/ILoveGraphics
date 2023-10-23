@@ -5,17 +5,50 @@ namespace ILoveGraphics
     internal class Transform
     {
         /// <summary>
+        /// 发生变换时调用
+        /// </summary>
+        public event Action? OnTransforming;
+
+        private Vector4 _positon;
+        private Vector4 _eulerAngle;
+        private Vector4 _scale;
+
+        /// <summary>
         /// 位置
         /// </summary>
-        public Vector4 Position { get; init; }
+        public Vector4 Position
+        {
+            get => _positon;
+            set
+            {
+                _positon = value;
+                OnTransforming?.Invoke();
+            }
+        }
         /// <summary>
         /// 旋转(欧拉角)
         /// </summary>
-        public Vector4 EulerAngle { get; init; }
+        public Vector4 EulerAngle
+        {
+            get => _eulerAngle;
+            set
+            {
+                _eulerAngle = value;
+                OnTransforming?.Invoke();
+            }
+        }
         /// <summary>
         /// 缩放
         /// </summary>
-        public Vector4 Scale { get; init; }
+        public Vector4 Scale
+        {
+            get => _scale;
+            set
+            {
+                _scale = value;
+                OnTransforming?.Invoke();
+            }
+        }
 
         /// <summary>
         /// 模型矩阵
