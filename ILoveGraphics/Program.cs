@@ -59,5 +59,7 @@ while (true)
     // renderedObjects[0].Transform.EulerAngle = new Vector4((scale - 1.5f) * 2 * 15, 0, 0);
     renderedObjects[0].Transform.EulerAngle = new Vector4(0, 5 * time, 0);
     renderedObjects[0].Transform.Scale = new Vector4(scale, 3 - scale);
+    
+    
     camera.Renderer(renderedObjects);
 }

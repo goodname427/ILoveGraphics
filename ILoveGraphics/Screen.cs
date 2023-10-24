@@ -1,14 +1,11 @@
 ﻿using MatrixCore;
-using System.Drawing;
-using System.Security.Principal;
+using System.Text;
 
 namespace ILoveGraphics
 {
     internal class Screen
     {
-        private readonly PixelColor[,] _clear;
         private readonly PixelColor[,] _buff;
-        private readonly PixelColor[,] _newBuff;
 
         /// <summary>
         /// 宽度
@@ -34,17 +31,8 @@ namespace ILoveGraphics
             Width = width;
             Height = height;
 
-            _clear = new PixelColor[Width, Height];
-            for (int x = 0; x < Width; x++)
-                for (int y = 0; y < Height; y++)
-                    _clear[x, y] = new PixelColor(0, ConsoleColor.White);
-
             _buff = new PixelColor[Width, Height];
-            Array.Copy(_clear, _buff, _clear.Length);
-
-            _newBuff = new PixelColor[Width, Height];
-            Array.Copy(_clear, _newBuff, _clear.Length);
-
+            Clear();
 
             ViewportMatrix = new float[,]
             {
@@ -75,7 +63,7 @@ namespace ILoveGraphics
             if (x < 0 || x >= Width || y < 0 || y >= Height)
                 return;
 
-            _newBuff[x, y] = color;
+            _buff[x, y] = color;
         }
 
         /// <summary>
@@ -83,28 +71,43 @@ namespace ILoveGraphics
         /// </summary>
         public void Clear()
         {
-            Array.Copy(_clear, _newBuff, _clear.Length);
+            for (int x = 0; x < Width; x++)
+                for (int y = 0; y < Height; y++)
+                    _buff[x, y] = new PixelColor(0, ConsoleColor.White);
         }
         /// <summary>
         /// 输出
         /// </summary>
         public void Output()
         {
-            for (int x = 0; x < Width; x++)
+            Console.SetCursorPosition(0, 0);
+            var output = new StringBuilder();
+            var color = ConsoleColor.White;
+            
+            // 将颜色相同（或者透明）的字符一次性输出
+            for (int y = Height - 1; y >= 0; y--)
             {
-                for (int y = 0; y < Height; y++)
+                for (int x = 0; x < Width; x++)
                 {
-                    if ((_buff[x, y].ConsoleChar != _newBuff[x, y].ConsoleChar
-                        || _buff[x, y].ConsoleColor != _newBuff[x, y].ConsoleColor))
+                    if (_buff[x, y].ConsoleColor == color || _buff[x, y].Alpha == 0)
                     {
-                        Console.ForegroundColor = _newBuff[x, y].ConsoleColor;
-                        Console.SetCursorPosition(x * 2, Height - y);
-                        Console.Write(_newBuff[x, y].ConsoleChar);
+                        output.Append(_buff[x, y].ConsoleChar);
+                        output.Append(' ');
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = color;
+                        Console.Write(output);
+                        color = _buff[x, y].ConsoleColor;
+                        output.Clear();
                     }
                 }
+                if(y != 0)
+                    output.Append('\n');
             }
 
-            Array.Copy(_newBuff, _buff, _buff.Length);
+            Console.ForegroundColor = color;
+            Console.Write(output);
         }
         /// <summary>
         /// 光栅化
