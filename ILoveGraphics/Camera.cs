@@ -1,4 +1,5 @@
 ﻿using MatrixCore;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ILoveGraphics
 {
@@ -33,12 +34,14 @@ namespace ILoveGraphics
         /// </summary>
         public float Far { get; set; } = -3000;
 
-        private Matrix _viewingMatrix;
-
         /// <summary>
         /// 渲染屏幕
         /// </summary>
         public Screen Screen { get; set; }
+        /// <summary>
+        /// 光照
+        /// </summary>
+        public DirectLight Light { get; set; }
 
         /// <summary>
         /// 视图矩阵
@@ -96,16 +99,12 @@ namespace ILoveGraphics
         /// </summary>
         public Matrix ViewingMatrix => OrthogonalizedProjectionMatrix * PerspectProjectionMatrix * ViewMatrix;
 
-        public Camera(Screen screen)
+        public Camera(Screen screen, DirectLight? light = null)
         {
             Screen = screen;
-            _viewingMatrix = ViewingMatrix;
+            Light = light ?? new DirectLight();
         }
 
-        public void Reset()
-        {
-            _viewingMatrix = ViewingMatrix;
-        }
 
         /// <summary>
         /// 对物体进行渲染
@@ -114,6 +113,8 @@ namespace ILoveGraphics
         public void Renderer(IEnumerable<RenderedObject> renderedObjects)
         {
             Screen.Clear();
+
+            var viewingMatrix = ViewingMatrix;
             foreach (var renderedObject in renderedObjects)
             {
                 var transformMatrix = renderedObject.Transform.TransformMatrix;
@@ -129,13 +130,13 @@ namespace ILoveGraphics
                     var ab = vertexes[renderedObject.Mesh.Triangles[i * 3 + 1]] - vertexes[renderedObject.Mesh.Triangles[i * 3]];
                     var ac = vertexes[renderedObject.Mesh.Triangles[i * 3 + 2]] - vertexes[renderedObject.Mesh.Triangles[i * 3]];
                     var normal = Vector4.Cross(ab, ac).Normalized;
-                    var alpha = (int)(PixelColor.MaxAlpha * normal * new Vector4(0, 1, 1).Normalized);
-                    colors[i] = new(alpha, ConsoleColor.Red);
+                    var color = new PixelColor(PixelColor.MaxAlpha, (ConsoleColor)i);
+                    colors[i] = color * (normal * Light.Direction);
                 }
 
                 // 视图+投影变换
                 vertexes = (from vertex in vertexes
-                            select _viewingMatrix * vertex).ToArray();
+                            select viewingMatrix * vertex).ToArray();
 
                 // 光栅化
                 for (int i = 0; i < renderedObject.Mesh.Triangles.Length; i += 3)
@@ -148,6 +149,7 @@ namespace ILoveGraphics
                     );
                 }
             }
+
             Screen.Output();
         }
     }

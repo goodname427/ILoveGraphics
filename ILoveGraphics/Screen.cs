@@ -52,19 +52,6 @@ namespace ILoveGraphics
         {
             return (ViewportMatrix * vertex) / vertex.W;
         }
-        /// <summary>
-        /// 绘制
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="color"></param>
-        private void Draw(int x, int y, PixelColor color)
-        {
-            if (x < 0 || x >= Width || y < 0 || y >= Height)
-                return;
-
-            _buff[x, y] = color;
-        }
 
         /// <summary>
         /// 清除
@@ -72,8 +59,15 @@ namespace ILoveGraphics
         public void Clear()
         {
             for (int x = 0; x < Width; x++)
+            {
                 for (int y = 0; y < Height; y++)
+                {
                     _buff[x, y] = new PixelColor(0, ConsoleColor.White);
+                    // _zBuff[x, y] = float.MinValue;
+                }
+            }
+
+
         }
         /// <summary>
         /// 输出
@@ -83,7 +77,7 @@ namespace ILoveGraphics
             Console.SetCursorPosition(0, 0);
             var output = new StringBuilder();
             var color = ConsoleColor.White;
-            
+
             // 将颜色相同（或者透明）的字符一次性输出
             for (int y = Height - 1; y >= 0; y--)
             {
@@ -102,7 +96,7 @@ namespace ILoveGraphics
                         output.Clear();
                     }
                 }
-                if(y != 0)
+                if (y != 0)
                     output.Append('\n');
             }
 
@@ -116,21 +110,25 @@ namespace ILoveGraphics
         /// <param name="triangles"></param>
         public void Rasterize(Vector4 a, Vector4 b, Vector4 c, PixelColor color)
         {
+            if (color.Alpha == 0)
+                return;
+
             // 视口变换
             a = ViewportTranformation(a);
             b = ViewportTranformation(b);
             c = ViewportTranformation(c);
 
             // 获取bounding box
-            var left = MathF.Min(a.X, MathF.Min(b.X, c.X));
-            var right = MathF.Max(a.X, MathF.Max(b.X, c.X));
-            var bottom = MathF.Min(a.Y, MathF.Min(b.Y, c.Y));
-            var top = MathF.Max(a.Y, MathF.Max(b.Y, c.Y));
+            var left = MathF.Max(MathTool.Min(a.X, b.X, c.X), 0);
+            var right = MathF.Min(MathTool.Max(a.X, b.X, c.X), Width - 1);
+            var bottom = MathF.Max(MathTool.Min(a.Y, b.Y, c.Y), 0);
+            var top = MathF.Min(MathTool.Max(a.Y, b.Y, c.Y), Height - 1);
 
             // 判断点是否在三角面中
             var ab = b - a;
             var bc = c - b;
             var ca = a - c;
+
             for (int x = (int)left; x <= right; x++)
             {
                 for (int y = (int)bottom; y <= top; y++)
@@ -147,7 +145,7 @@ namespace ILoveGraphics
                     // 在三角形里面
                     if (dir1 == dir2 && dir2 == dir3)
                     {
-                        Draw(x, y, color);
+                        _buff[x, y] = color;
                     }
                 }
             }

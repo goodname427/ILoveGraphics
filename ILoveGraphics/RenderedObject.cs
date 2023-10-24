@@ -5,7 +5,7 @@
         /// <summary>
         /// 物体的变换信息
         /// </summary>
-        public Transform Transform { get; } = new Transform();
+        public Transform Transform { get; init; } = new Transform();
         /// <summary>
         /// 物体模型
         /// </summary>

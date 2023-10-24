@@ -1,7 +1,18 @@
-﻿namespace ILoveGraphics
+﻿using MatrixCore;
+
+namespace ILoveGraphics
 {
     internal struct PixelColor
     {
+        public static PixelColor operator *(PixelColor left, float right)
+        {
+            return new PixelColor((int)(left.Alpha * right), left.ConsoleColor);
+        }
+        public static PixelColor operator *(float left, PixelColor right)
+        {
+            return right * left;
+        }
+
         /// <summary>
         /// 灰度字符
         /// </summary>
@@ -53,12 +64,12 @@
             get => _alpha;
             set
             {
-                _alpha = value;
+                _alpha = (int)MathTool.Clamp(value, 0, MaxAlpha);
                 ConsoleChar = GetSameGrayValueChar(_alpha, 0, s_grayValue.Length - 1);
             }
         }
-        
-        public PixelColor(int alpha = 0, ConsoleColor consoleColor = ConsoleColor.White) 
+
+        public PixelColor(int alpha = 0, ConsoleColor consoleColor = ConsoleColor.White)
         {
             ConsoleColor = consoleColor;
             Alpha = alpha;

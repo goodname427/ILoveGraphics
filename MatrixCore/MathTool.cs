@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MatrixCore
+﻿namespace MatrixCore
 {
     public static class MathTool
     {
@@ -27,6 +21,26 @@ namespace MatrixCore
             }
 
             res += t;
+        }
+
+        public static float Min(params float[] nums)
+        {
+            return nums.Min();
+        }
+
+        public static float Max(params float[] nums)
+        {
+            return nums.Max();
+        }
+
+        public static float Clamp(float a, float min, float max)
+        {
+            if (a < min)
+                return min;
+            if (a > max)
+                return max;
+
+            return a;
         }
     }
 }
