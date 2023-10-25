@@ -15,14 +15,15 @@ namespace ILoveGraphics
             var camera = new Camera(screen)
             {
                 FieldOfView = 90,
-                Positon = new Vector4(0, 0, -3f),
+                Positon = new Vector4(0, 0, -10f),
                 Light = new DirectionalLight(new Vector4(0, 1, -1), new PixelColor(PixelColor.MaxAlpha, ConsoleColor.Red))
             };
 
             var renderedObjects = new RenderedObject[]
             {
                 // new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\models\\untitled.obj")),
-                new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\models\\heart.obj")),
+                // new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\models\\heart.obj")),
+                new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\models\\Pose1.obj")),
                 // new(Mesh.Cube())
             };
 
