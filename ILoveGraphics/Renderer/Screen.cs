@@ -1,26 +1,12 @@
-﻿using MatrixCore;
+﻿using ILoveGraphics.Renderer.ScreenDrawer;
+using MatrixCore;
 using System.Text;
 
-namespace ILoveGraphics
+namespace ILoveGraphics.Renderer
 {
     internal class Screen
     {
-        #region
-        private static void Write(string value)
-        {
-            Console.Write(value);
-        }
-        private static void SetCursorPosition(int x, int y)
-        {
-            Console.SetCursorPosition(0, 0);
-        }
-        private static void SetColor(ConsoleColor color)
-        {
-            Console.ForegroundColor = color;
-        }
-        #endregion
-
-        private readonly PixelColor[,] _frameBuffer;
+        private readonly Vector4[,] _frameBuffer;
         private readonly float[,] _zBuffer;
 
         /// <summary>
@@ -32,22 +18,23 @@ namespace ILoveGraphics
         /// </summary>
         public int Height { get; init; } = 100;
 
+        public IScreenDrawer ScreenDrawer { get; } 
         /// <summary>
         /// 视口变换
         /// </summary>
         public Matrix ViewportMatrix { get; }
 
-        public Screen() : this(Console.WindowWidth / 2, Console.WindowHeight)
+        public Screen() : this(new ConsoleScreenDrawer(), Console.WindowWidth / 2, Console.WindowHeight)
         {
 
         }
-        public Screen(int width = 100, int height = 100)
+        public Screen(IScreenDrawer screenDrawer, int width = 100, int height = 100)
         {
-            Console.CursorVisible = false;
+            ScreenDrawer = screenDrawer;
             Width = width;
             Height = height;
 
-            _frameBuffer = new PixelColor[Width, Height];
+            _frameBuffer = new Vector4[Width, Height];
             _zBuffer = new float[Width, Height];
             Clear();
 
@@ -61,29 +48,12 @@ namespace ILoveGraphics
         }
 
         /// <summary>
-        /// 视口变换
-        /// </summary>
-        /// <param name="vertex"></param>
-        /// <returns></returns>
-        private Vector4 ViewportTranformation(Vector4 vertex)
-        {
-            return (ViewportMatrix * vertex) / vertex.W;
-        }
-        /// <summary>
         /// 光栅化
         /// </summary>
         /// <param name="vertexes"></param>
         /// <param name="triangles"></param>
-        public void Rasterize(Vector4 a, Vector4 b, Vector4 c, PixelColor color)
+        public void Rasterize(Vector4 a, Vector4 b, Vector4 c, Vector4 color)
         {
-            if (color.Alpha == 0)
-                return;
-
-            // 视口变换
-            a = ViewportTranformation(a);
-            b = ViewportTranformation(b);
-            c = ViewportTranformation(c);
-
             // 获取bounding box
             var left = MathF.Max(MathTool.Min(a.X, b.X, c.X), 0);
             var right = MathF.Min(MathTool.Max(a.X, b.X, c.X), Width - 1);
@@ -110,8 +80,8 @@ namespace ILoveGraphics
                     var dir3 = MathF.Sign(Vector4.Cross(ca, cp).Z);
 
                     // z buffer
-                    var z = a.Z - (n * ap / n.Z);
-                    
+                    var z = a.Z - n * ap / n.Z;
+
                     // 采样
                     if (dir1 == dir2 && dir2 == dir3 && z > _zBuffer[x, y])
                     {
@@ -131,7 +101,7 @@ namespace ILoveGraphics
             {
                 for (int y = 0; y < Height; y++)
                 {
-                    _frameBuffer[x, y].Alpha = 0;
+                    _frameBuffer[x, y] = Vector4.Zero;
                     _zBuffer[x, y] = float.MinValue;
                 }
             }
@@ -139,41 +109,11 @@ namespace ILoveGraphics
 
         }
         /// <summary>
-        /// 将frame buffer输出到控制台中
+        /// 将frame buffer输出
         /// </summary>
-        public void Output(string message = "")
+        public void Draw(string message = "")
         {
-            SetCursorPosition(0, 0);
-            var output = new StringBuilder();
-            var color = ConsoleColor.White;
-
-            // 将颜色相同（或者透明）的字符一次性输出
-            for (int y = Height - 1; y >= 0; y--)
-            {
-                for (int x = 0; x < Width; x++)
-                {
-                    if (_frameBuffer[x, y].Alpha == 0 || _frameBuffer[x, y].ConsoleColor == color)
-                    {
-                        output.Append(_frameBuffer[x, y].ConsoleChar);
-                        output.Append(' ');
-                    }
-                    else
-                    {
-                        SetColor(color);
-                        Write(output.ToString());
-                        color = _frameBuffer[x, y].ConsoleColor;
-                        output.Clear();
-                    }
-                }
-                if (y != 0)
-                    output.Append('\n');
-            }
-
-            SetColor(color);
-            Write(output.ToString());
-
-            SetCursorPosition(0, 0);
-            Write(message);
+            ScreenDrawer.Draw(_frameBuffer, message);
         }
     }
 }

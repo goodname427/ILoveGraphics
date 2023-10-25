@@ -1,6 +1,7 @@
-﻿using MatrixCore;
+﻿using ILoveGraphics.Renderer.ScreenDrawer;
+using MatrixCore;
 
-namespace ILoveGraphics
+namespace ILoveGraphics.Light
 {
     internal class DirectionalLight
     {
@@ -17,19 +18,19 @@ namespace ILoveGraphics
         /// <summary>
         /// 光照颜色
         /// </summary>
-        public PixelColor Color { get; set; }
+        public Vector4 Color { get; set; }
 
-        public DirectionalLight() : this(new Vector4(0, 1, 1, 0), new(PixelColor.MaxAlpha, ConsoleColor.White))
+        public DirectionalLight() : this(new Vector4(0, 1, 1, 0), Vector4.One)
         {
 
         }
 
-        public DirectionalLight(Vector4 direction) : this(direction, new(PixelColor.MaxAlpha, ConsoleColor.White))
+        public DirectionalLight(Vector4 direction) : this(direction, Vector4.One)
         {
 
         }
 
-        public DirectionalLight(Vector4 direction, PixelColor color)
+        public DirectionalLight(Vector4 direction, Vector4 color)
         {
             Direction = direction;
             Color = color;

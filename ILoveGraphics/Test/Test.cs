@@ -1,6 +1,10 @@
-﻿using MatrixCore;
+﻿using ILoveGraphics.Light;
+using ILoveGraphics.Object;
+using ILoveGraphics.Renderer;
+using ILoveGraphics.Renderer.ScreenDrawer;
+using MatrixCore;
 
-namespace ILoveGraphics
+namespace ILoveGraphics.Test
 {
     internal class Test
     {
@@ -15,15 +19,15 @@ namespace ILoveGraphics
             var camera = new Camera(screen)
             {
                 FieldOfView = 90,
-                Positon = new Vector4(0, 0, -10f),
-                Light = new DirectionalLight(new Vector4(0, 1, -1), new PixelColor(PixelColor.MaxAlpha, ConsoleColor.Red))
+                Positon = new Vector4(0, 0, -3f),
+                Light = new DirectionalLight(new Vector4(0, 1, -1))
             };
 
             var renderedObjects = new RenderedObject[]
             {
-                // new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\models\\untitled.obj")),
-                // new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\models\\heart.obj")),
-                new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\models\\Pose1.obj")),
+                // new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\Models\\untitled.obj")),
+                new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\Models\\heart.obj")),
+                // new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\Models\\Pose1.obj")),
                 // new(Mesh.Cube())
             };
 
@@ -38,8 +42,8 @@ namespace ILoveGraphics
             {
                 Task.Delay(interval).Wait();
                 frameCount++;
-                
-                
+
+
                 MathTool.PingPong(1, 1.2f, ref step, ref scale);
 
                 time += 0.001f * interval;

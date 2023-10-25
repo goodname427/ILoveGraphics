@@ -1,4 +1,4 @@
-﻿using ILoveGraphics;
+﻿using ILoveGraphics.Test;
 using MatrixCore;
 
 //Mesh.Load(@"E:\CGL\Programs\CSharp\ILoveGraphics\ILoveGraphics\models\untitled.obj");

@@ -1,7 +1,9 @@
-﻿using MatrixCore;
-using System.Security.Cryptography.X509Certificates;
+﻿using ILoveGraphics.Object;
+using ILoveGraphics.Renderer.ScreenDrawer;
+using MatrixCore;
+using ILoveGraphics.Light;
 
-namespace ILoveGraphics
+namespace ILoveGraphics.Renderer
 {
     internal class Camera
     {
@@ -20,7 +22,7 @@ namespace ILoveGraphics
         /// <summary>
         /// 相机宽高比
         /// </summary>
-        public float AspectRatio => (1.0f * Screen.Width) / Screen.Height;
+        public float AspectRatio => 1.0f * Screen.Width / Screen.Height;
         /// <summary>
         /// 视角范围
         /// </summary>
@@ -124,24 +126,22 @@ namespace ILoveGraphics
                                 select transformMatrix * vertex).ToArray();
 
                 // 计算光照
-                PixelColor[] colors = new PixelColor[renderedObject.Mesh.Triangles.Length / 3];
+                Vector4[] colors = new Vector4[renderedObject.Mesh.Triangles.Length / 3];
                 for (int i = 0; i < colors.Length; i++)
                 {
                     var ab = vertexes[renderedObject.Mesh.Triangles[i * 3 + 1]] - vertexes[renderedObject.Mesh.Triangles[i * 3]];
                     var ac = vertexes[renderedObject.Mesh.Triangles[i * 3 + 2]] - vertexes[renderedObject.Mesh.Triangles[i * 3]];
                     var normal = Vector4.Cross(ab, ac).Normalized;
-                    // var color = new PixelColor(PixelColor.MaxAlpha, (ConsoleColor)(i % 15 + 1));
-                    var color = Light.Color;
-                    colors[i] = color * (normal * Light.Direction);
-                    colors[i].Alpha = MathF.Max(colors[i].Alpha, 5);
+                    colors[i] = Light.Color * MathF.Max(0, normal * Light.Direction);
                 }
-                
+
                 //message = string.Join(' ', colors.Select(c => c.Alpha));
 
 
                 // 视图+投影变换
                 vertexes = (from vertex in vertexes
-                            select viewingMatrix * vertex).ToArray();
+                            let vertex1 = Screen.ViewportMatrix * viewingMatrix * vertex
+                            select vertex1 / vertex1.W).ToArray();
 
                 // 光栅化
                 for (int i = 0; i < renderedObject.Mesh.Triangles.Length; i += 3)
@@ -155,7 +155,7 @@ namespace ILoveGraphics
                 }
             }
 
-            Screen.Output(message);
+            Screen.Draw(message);
         }
     }
 }

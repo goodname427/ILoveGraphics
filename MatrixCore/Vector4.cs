@@ -54,7 +54,8 @@ public struct Vector4
     }
 
 
-    public static Vector4 One => new(1, 1, 1, 1);
+    public static Vector4 One { get; } = new(1, 1, 1, 1);
+    public static Vector4 Zero { get; } = new();
 
     public float X { get; set; }
     public float Y { get; set; }

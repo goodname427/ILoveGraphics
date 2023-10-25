@@ -1,4 +1,4 @@
-﻿namespace ILoveGraphics
+﻿namespace ILoveGraphics.Object
 {
     internal class RenderedObject
     {
