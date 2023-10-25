@@ -2,7 +2,7 @@
 
 namespace ILoveGraphics
 {
-    internal class DirectLight
+    internal class DirectionalLight
     {
         private Vector4 _direction;
 
@@ -19,17 +19,17 @@ namespace ILoveGraphics
         /// </summary>
         public PixelColor Color { get; set; }
 
-        public DirectLight() : this(new Vector4(0, 1, 1, 0), new(PixelColor.MaxAlpha, ConsoleColor.White))
+        public DirectionalLight() : this(new Vector4(0, 1, 1, 0), new(PixelColor.MaxAlpha, ConsoleColor.White))
         {
 
         }
 
-        public DirectLight(Vector4 direction) : this(direction, new(PixelColor.MaxAlpha, ConsoleColor.White))
+        public DirectionalLight(Vector4 direction) : this(direction, new(PixelColor.MaxAlpha, ConsoleColor.White))
         {
 
         }
 
-        public DirectLight(Vector4 direction, PixelColor color)
+        public DirectionalLight(Vector4 direction, PixelColor color)
         {
             Direction = direction;
             Color = color;

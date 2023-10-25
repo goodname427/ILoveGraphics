@@ -5,6 +5,44 @@ namespace ILoveGraphics
     internal class Mesh
     {
         #region 
+        public static Mesh Load(string filename)
+        {
+            var texts = File.ReadAllLines(filename);
+            var vertexes = new List<Vector4>();
+            var triangles = new List<int>();
+            foreach (var text in texts)
+            {
+                if (string.IsNullOrWhiteSpace(text))
+                    continue;
+
+                var args = text.Split(' ');
+                var tag = args[0];
+                args = args[1..^0];
+
+                switch (tag)
+                {
+                    case "v":
+                        vertexes.Add(new Vector4(float.Parse(args[0]), float.Parse(args[1]), float.Parse(args[2])));
+                        break;
+                    case "f":
+                        var indexes = args.Select(arg => arg[0..arg.IndexOf('/')]).ToArray();
+                        triangles.Add(int.Parse(indexes[0]) - 1);
+                        triangles.Add(int.Parse(indexes[1]) - 1);
+                        triangles.Add(int.Parse(indexes[2]) - 1);
+                        if (indexes.Length > 3)
+                        {
+                            triangles.Add(int.Parse(indexes[0]) - 1);
+                            triangles.Add(int.Parse(indexes[2]) - 1);
+                            triangles.Add(int.Parse(indexes[3]) - 1);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return new Mesh(vertexes.ToArray(), triangles.ToArray());
+        }
         public static Mesh Cube()
         {
             return new Mesh(

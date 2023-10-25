@@ -5,7 +5,23 @@ namespace ILoveGraphics
 {
     internal class Screen
     {
-        private readonly PixelColor[,] _buff;
+        #region
+        private static void Write(string value)
+        {
+            Console.Write(value);
+        }
+        private static void SetCursorPosition(int x, int y)
+        {
+            Console.SetCursorPosition(0, 0);
+        }
+        private static void SetColor(ConsoleColor color)
+        {
+            Console.ForegroundColor = color;
+        }
+        #endregion
+
+        private readonly PixelColor[,] _frameBuffer;
+        private readonly float[,] _zBuffer;
 
         /// <summary>
         /// 宽度
@@ -31,7 +47,8 @@ namespace ILoveGraphics
             Width = width;
             Height = height;
 
-            _buff = new PixelColor[Width, Height];
+            _frameBuffer = new PixelColor[Width, Height];
+            _zBuffer = new float[Width, Height];
             Clear();
 
             ViewportMatrix = new float[,]
@@ -51,57 +68,6 @@ namespace ILoveGraphics
         private Vector4 ViewportTranformation(Vector4 vertex)
         {
             return (ViewportMatrix * vertex) / vertex.W;
-        }
-
-        /// <summary>
-        /// 清除
-        /// </summary>
-        public void Clear()
-        {
-            for (int x = 0; x < Width; x++)
-            {
-                for (int y = 0; y < Height; y++)
-                {
-                    _buff[x, y] = new PixelColor(0, ConsoleColor.White);
-                    // _zBuff[x, y] = float.MinValue;
-                }
-            }
-
-
-        }
-        /// <summary>
-        /// 输出
-        /// </summary>
-        public void Output()
-        {
-            Console.SetCursorPosition(0, 0);
-            var output = new StringBuilder();
-            var color = ConsoleColor.White;
-
-            // 将颜色相同（或者透明）的字符一次性输出
-            for (int y = Height - 1; y >= 0; y--)
-            {
-                for (int x = 0; x < Width; x++)
-                {
-                    if (_buff[x, y].ConsoleColor == color || _buff[x, y].Alpha == 0)
-                    {
-                        output.Append(_buff[x, y].ConsoleChar);
-                        output.Append(' ');
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = color;
-                        Console.Write(output);
-                        color = _buff[x, y].ConsoleColor;
-                        output.Clear();
-                    }
-                }
-                if (y != 0)
-                    output.Append('\n');
-            }
-
-            Console.ForegroundColor = color;
-            Console.Write(output);
         }
         /// <summary>
         /// 光栅化
@@ -124,31 +90,90 @@ namespace ILoveGraphics
             var bottom = MathF.Max(MathTool.Min(a.Y, b.Y, c.Y), 0);
             var top = MathF.Min(MathTool.Max(a.Y, b.Y, c.Y), Height - 1);
 
-            // 判断点是否在三角面中
+            // 三角形三边
             var ab = b - a;
             var bc = c - b;
             var ca = a - c;
-
+            // 法线
+            var n = Vector4.Cross(ab, bc);
             for (int x = (int)left; x <= right; x++)
             {
                 for (int y = (int)bottom; y <= top; y++)
                 {
-                    var p = new Vector4(x + 0.5f, y + 0.5f, 0);
+                    // inside
+                    var p = new Vector4(x + 0.5f, y + 0.5f, a.Z);
                     var ap = p - a;
                     var bp = p - b;
                     var cp = p - c;
-
                     var dir1 = MathF.Sign(Vector4.Cross(ab, ap).Z);
                     var dir2 = MathF.Sign(Vector4.Cross(bc, bp).Z);
                     var dir3 = MathF.Sign(Vector4.Cross(ca, cp).Z);
 
-                    // 在三角形里面
-                    if (dir1 == dir2 && dir2 == dir3)
+                    // z buffer
+                    var z = a.Z - (n * ap / n.Z);
+                    
+                    // 采样
+                    if (dir1 == dir2 && dir2 == dir3 && z > _zBuffer[x, y])
                     {
-                        _buff[x, y] = color;
+                        _frameBuffer[x, y] = color;
+                        _zBuffer[x, y] = z;
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 清除
+        /// </summary>
+        public void Clear()
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 0; y < Height; y++)
+                {
+                    _frameBuffer[x, y].Alpha = 0;
+                    _zBuffer[x, y] = float.MinValue;
+                }
+            }
+
+
+        }
+        /// <summary>
+        /// 将frame buffer输出到控制台中
+        /// </summary>
+        public void Output(string message = "")
+        {
+            SetCursorPosition(0, 0);
+            var output = new StringBuilder();
+            var color = ConsoleColor.White;
+
+            // 将颜色相同（或者透明）的字符一次性输出
+            for (int y = Height - 1; y >= 0; y--)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    if (_frameBuffer[x, y].Alpha == 0 || _frameBuffer[x, y].ConsoleColor == color)
+                    {
+                        output.Append(_frameBuffer[x, y].ConsoleChar);
+                        output.Append(' ');
+                    }
+                    else
+                    {
+                        SetColor(color);
+                        Write(output.ToString());
+                        color = _frameBuffer[x, y].ConsoleColor;
+                        output.Clear();
+                    }
+                }
+                if (y != 0)
+                    output.Append('\n');
+            }
+
+            SetColor(color);
+            Write(output.ToString());
+
+            SetCursorPosition(0, 0);
+            Write(message);
         }
     }
 }

@@ -41,7 +41,7 @@ namespace ILoveGraphics
         /// <summary>
         /// 光照
         /// </summary>
-        public DirectLight Light { get; set; }
+        public DirectionalLight Light { get; set; }
 
         /// <summary>
         /// 视图矩阵
@@ -50,10 +50,10 @@ namespace ILoveGraphics
         {
             get
             {
-                var gCrosst = Vector4.Cross(Gaze, Top);
+                var gXt = Vector4.Cross(Gaze, Top);
                 return new Matrix(new float[,]
                 {
-                    {gCrosst.X, gCrosst.Y, gCrosst.Z, 0},
+                    {gXt.X, gXt.Y, gXt.Z, 0},
                     {Top.X, Top.Y, Top.Z, 0},
                     {-Gaze.X, -Gaze.Y, -Gaze.Z, 0},
                     {0, 0, 0, 1}
@@ -83,7 +83,7 @@ namespace ILoveGraphics
         {
             get
             {
-                float top = MathF.Abs(Near) * MathF.Tan(FieldOfView / 2);
+                float top = MathF.Abs(Near) * MathF.Tan(MathF.PI * FieldOfView / 360);
                 float left = top * AspectRatio;
                 return new float[,]
                 {
@@ -99,10 +99,10 @@ namespace ILoveGraphics
         /// </summary>
         public Matrix ViewingMatrix => OrthogonalizedProjectionMatrix * PerspectProjectionMatrix * ViewMatrix;
 
-        public Camera(Screen screen, DirectLight? light = null)
+        public Camera(Screen screen, DirectionalLight? light = null)
         {
             Screen = screen;
-            Light = light ?? new DirectLight();
+            Light = light ?? new DirectionalLight();
         }
 
 
@@ -110,7 +110,7 @@ namespace ILoveGraphics
         /// 对物体进行渲染
         /// </summary>
         /// <param name="renderedObjects"></param>
-        public void Renderer(IEnumerable<RenderedObject> renderedObjects)
+        public void Render(IEnumerable<RenderedObject> renderedObjects, string message = "")
         {
             Screen.Clear();
 
@@ -130,9 +130,14 @@ namespace ILoveGraphics
                     var ab = vertexes[renderedObject.Mesh.Triangles[i * 3 + 1]] - vertexes[renderedObject.Mesh.Triangles[i * 3]];
                     var ac = vertexes[renderedObject.Mesh.Triangles[i * 3 + 2]] - vertexes[renderedObject.Mesh.Triangles[i * 3]];
                     var normal = Vector4.Cross(ab, ac).Normalized;
-                    var color = new PixelColor(PixelColor.MaxAlpha, (ConsoleColor)i);
+                    // var color = new PixelColor(PixelColor.MaxAlpha, (ConsoleColor)(i % 15 + 1));
+                    var color = Light.Color;
                     colors[i] = color * (normal * Light.Direction);
+                    colors[i].Alpha = MathF.Max(colors[i].Alpha, 5);
                 }
+                
+                //message = string.Join(' ', colors.Select(c => c.Alpha));
+
 
                 // 视图+投影变换
                 vertexes = (from vertex in vertexes
@@ -150,7 +155,7 @@ namespace ILoveGraphics
                 }
             }
 
-            Screen.Output();
+            Screen.Output(message);
         }
     }
 }
