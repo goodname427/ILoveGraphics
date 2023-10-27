@@ -1,5 +1,4 @@
 ﻿using MatrixCore;
-using System.ComponentModel.Design;
 
 namespace ILoveGraphics.Renderer.ScreenDrawer
 {
@@ -48,6 +47,42 @@ namespace ILoveGraphics.Renderer.ScreenDrawer
 
             return GetSameGrayValueChar(gray, left, mid);
         }
+        private static ConsoleColor GetApproximateConsoleColor(Vector4 color)
+        {
+            // 定义16种ConsoleColor的颜色映射
+            //if (color.X < 0.5f && color.Y < 0.5f && color.Z < 0.5f)
+            //    return ConsoleColor.Black;
+            if (color.X < 0.5f && color.Y < 0.5f && color.Z >= 0.5f)
+                return ConsoleColor.DarkBlue;
+            if (color.X < 0.5f && color.Y >= 0.5f && color.Z < 0.5f)
+                return ConsoleColor.DarkGreen;
+            if (color.X < 0.5f && color.Y >= 0.5f && color.Z >= 0.5f)
+                return ConsoleColor.DarkCyan;
+            if (color.X >= 0.5f && color.Y < 0.5f && color.Z < 0.5f)
+                return ConsoleColor.DarkRed;
+            if (color.X >= 0.5f && color.Y < 0.5f && color.Z >= 0.5f)
+                return ConsoleColor.DarkMagenta;
+            if (color.X >= 0.5f && color.Y >= 0.5f && color.Z < 0.5f)
+                return ConsoleColor.DarkYellow;
+            if (color.X >= 0.5f && color.Y >= 0.5f && color.Z >= 0.5f)
+                return ConsoleColor.Gray;
+            if (color.X < 0.5f)
+                return ConsoleColor.DarkGray;
+            if (color.Y < 0.5f)
+                return ConsoleColor.Blue;
+            if (color.Z < 0.5f)
+                return ConsoleColor.Green;
+            if (color.X >= 0.5f && color.Y < 0.5f)
+                return ConsoleColor.Red;
+            if (color.X < 0.5f && color.Z >= 0.5f)
+                return ConsoleColor.Cyan;
+            if (color.Y >= 0.5f && color.Z < 0.5f)
+                return ConsoleColor.Yellow;
+            if (color.X >= 0.5f && color.Z >= 0.5f)
+                return ConsoleColor.White;
+            return ConsoleColor.White; // 默认为白色
+        }
+
 
         /// <summary>
         /// 将rgb颜色转为控制台字符
@@ -57,62 +92,7 @@ namespace ILoveGraphics.Renderer.ScreenDrawer
         public static PixelColor Parse(Vector4 color)
         {
             var gray = (color.X * 0.299f + color.Y * 0.587f + color.Z * 0.114f) * MaxGray;
-            var v = MathTool.Max(color.X, color.Y, color.Z);
-            var s = v == 0 ? 0 : (v - MathTool.Min(color.X, color.Y, color.Z)) / v;
-            float h;
-            if (v == color.X)
-            {
-                h = 60 * (color.Y - color.Z) / (v - MathTool.Min(color.X, color.Y, color.Z));
-            }
-            else if (v == color.Y)
-            {
-                h = 120 + 60 * (color.Z - color.X) / (v - MathTool.Min(color.X, color.Y, color.Z));
-            }
-            else
-            {
-                h = 240 + 60 * (color.X - color.Y) / (v - MathTool.Min(color.X, color.Y, color.Z));
-            }
-            h = (int)Math.Round(h / 60, MidpointRounding.AwayFromZero);
-
-            ConsoleColor consoleColor;
-            if (s < 0.5)
-            {
-                // we have a grayish color
-                consoleColor = (int)(v * 3.5) switch
-                {
-                    0 => ConsoleColor.Black,
-                    1 => ConsoleColor.DarkGray,
-                    2 => ConsoleColor.Gray,
-                    _ => ConsoleColor.White,
-                };
-            }
-            else if (s < 0.4)
-            {
-                // dark color
-                consoleColor = h switch
-                {
-                    1 => ConsoleColor.DarkYellow,
-                    2 => ConsoleColor.DarkGreen,
-                    3 => ConsoleColor.DarkCyan,
-                    4 => ConsoleColor.DarkBlue,
-                    5 => ConsoleColor.DarkMagenta,
-                    _ => ConsoleColor.DarkRed,
-                };
-            }
-            else
-            {
-                // bright color
-                consoleColor = h switch
-                {
-                    1 => ConsoleColor.Yellow,
-                    2 => ConsoleColor.Green,
-                    3 => ConsoleColor.Cyan,
-                    4 => ConsoleColor.Blue,
-                    5 => ConsoleColor.Magenta,
-                    _ => ConsoleColor.Red,
-                };
-
-            }
+            var consoleColor = ConsoleColor.White; //GetApproximateConsoleColor(color);
             return new PixelColor(gray, consoleColor);
         }
 

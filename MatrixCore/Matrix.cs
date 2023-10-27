@@ -183,6 +183,7 @@ public struct Matrix
         return !left.Equals(right);
     }
     #endregion
+    
     #region 预设矩阵
     /// <summary>
     /// n阶单位矩阵
@@ -324,6 +325,7 @@ public struct Matrix
     /// </summary>
     private float[,] _elements;
 
+    #region 基本属性
     /// <summary>
     /// 行数
     /// </summary>
@@ -332,7 +334,9 @@ public struct Matrix
     /// 列数
     /// </summary>
     public int N { get; init; }
+    #endregion
 
+    #region 相关计算
     /// <summary>
     /// 转置矩阵
     /// </summary>
@@ -416,7 +420,9 @@ public struct Matrix
             return M == N;
         }
     }
+    #endregion
 
+    #region 索引
     /// <summary>
     /// 返回全部索引
     /// </summary>
@@ -444,8 +450,9 @@ public struct Matrix
         get => _elements[m - 1, n - 1];
         set => _elements[m - 1, n - 1] = value;
     }
+    #endregion
 
-
+    #region 构造函数
     /// <summary>
     /// 指定大小的矩阵
     /// </summary>
@@ -475,7 +482,9 @@ public struct Matrix
             this[i, j] = elements[i - 1, j - 1];
         }
     }
+    #endregion
 
+    #region 函数重载
     public override string ToString()
     {
         StringBuilder sb = new();
@@ -508,7 +517,9 @@ public struct Matrix
     {
         return base.GetHashCode();
     }
+    #endregion
 
+    #region 基本函数
     /// <summary>
     /// 获取第m行
     /// </summary>
@@ -597,5 +608,6 @@ public struct Matrix
         }
         return matrix;
     }
+    #endregion
 }
 

@@ -2,23 +2,16 @@
 using ILoveGraphics.Renderer.ScreenDrawer;
 using MatrixCore;
 using ILoveGraphics.Light;
+using ILoveGraphics.Renderer.Shader;
 
 namespace ILoveGraphics.Renderer
 {
     internal class Camera
     {
         /// <summary>
-        /// 相机顶部
+        /// 相机变换
         /// </summary>
-        public Vector4 Top { get; set; } = new Vector4(0, 1, 0, 0);
-        /// <summary>
-        /// 相机朝向
-        /// </summary>
-        public Vector4 Gaze { get; set; } = new Vector4(0, 0, 1, 0);
-        /// <summary>
-        /// 相机位置
-        /// </summary>
-        public Vector4 Positon { get; set; } = new Vector4(0, 0, -1, 0);
+        public Transform Transform { get; init; }
         /// <summary>
         /// 相机宽高比
         /// </summary>
@@ -43,7 +36,7 @@ namespace ILoveGraphics.Renderer
         /// <summary>
         /// 光照
         /// </summary>
-        public DirectionalLight Light { get; set; }
+        public Light.Light Light  { get; set; }
 
         /// <summary>
         /// 视图矩阵
@@ -52,14 +45,16 @@ namespace ILoveGraphics.Renderer
         {
             get
             {
-                var gXt = Vector4.Cross(Gaze, Top);
+                var gaze = Transform.Forward;
+                var top = Transform.Up;
+                var gXt = Vector4.Cross(gaze, top);
                 return new Matrix(new float[,]
                 {
                     {gXt.X, gXt.Y, gXt.Z, 0},
-                    {Top.X, Top.Y, Top.Z, 0},
-                    {-Gaze.X, -Gaze.Y, -Gaze.Z, 0},
+                    {top.X, top.Y, top.Z, 0},
+                    {-gaze.X, -gaze.Y, -gaze.Z, 0},
                     {0, 0, 0, 1}
-                }) * Matrix.TranslationMatrix(-Positon);
+                }) * Matrix.TranslationMatrix(-Transform.Position);
             }
         }
         /// <summary>
@@ -105,8 +100,8 @@ namespace ILoveGraphics.Renderer
         {
             Screen = screen;
             Light = light ?? new DirectionalLight();
+            Transform = new Transform();
         }
-
 
         /// <summary>
         /// 对物体进行渲染
@@ -129,16 +124,17 @@ namespace ILoveGraphics.Renderer
                 Vector4[] colors = new Vector4[renderedObject.Mesh.Triangles.Length / 3];
                 for (int i = 0; i < colors.Length; i++)
                 {
-                    var ab = vertexes[renderedObject.Mesh.Triangles[i * 3 + 1]] - vertexes[renderedObject.Mesh.Triangles[i * 3]];
-                    var ac = vertexes[renderedObject.Mesh.Triangles[i * 3 + 2]] - vertexes[renderedObject.Mesh.Triangles[i * 3]];
-                    var normal = Vector4.Cross(ab, ac).Normalized;
-                    colors[i] = Light.Color * MathF.Max(0, normal * Light.Direction);
+                    colors[i] = renderedObject.Shader.GetColor(new IShader.ShaderArgs
+                    {
+                        A = vertexes[renderedObject.Mesh.Triangles[i * 3]],
+                        B = vertexes[renderedObject.Mesh.Triangles[i * 3 + 1]],
+                        C = vertexes[renderedObject.Mesh.Triangles[i * 3 + 2]],
+                        Light = Light,
+                        EyePosition = Transform.Position
+                    });
                 }
 
-                //message = string.Join(' ', colors.Select(c => c.Alpha));
-
-
-                // 视图+投影变换
+                // 视图+投影+视口变换
                 vertexes = (from vertex in vertexes
                             let vertex1 = Screen.ViewportMatrix * viewingMatrix * vertex
                             select vertex1 / vertex1.W).ToArray();

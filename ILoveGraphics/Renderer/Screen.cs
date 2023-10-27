@@ -17,7 +17,9 @@ namespace ILoveGraphics.Renderer
         /// 高度
         /// </summary>
         public int Height { get; init; } = 100;
-
+        /// <summary>
+        /// 屏幕绘制器
+        /// </summary>
         public IScreenDrawer ScreenDrawer { get; } 
         /// <summary>
         /// 视口变换
@@ -28,7 +30,11 @@ namespace ILoveGraphics.Renderer
         {
 
         }
-        public Screen(IScreenDrawer screenDrawer, int width = 100, int height = 100)
+        public Screen(IScreenDrawer screenDrawer) : this(screenDrawer, Console.WindowWidth / 2, Console.WindowHeight)
+        {
+
+        }
+        public Screen(IScreenDrawer screenDrawer, int width, int height)
         {
             ScreenDrawer = screenDrawer;
             Width = width;

@@ -1,4 +1,6 @@
-﻿namespace ILoveGraphics.Object
+﻿using ILoveGraphics.Renderer.Shader;
+
+namespace ILoveGraphics.Object
 {
     internal class RenderedObject
     {
@@ -10,11 +12,20 @@
         /// 物体模型
         /// </summary>
         public Mesh Mesh { get; set; }
+        /// <summary>
+        /// 着色器
+        /// </summary>
+        public IShader Shader { get; set; }
 
-        public RenderedObject(Mesh mesh)
+        public RenderedObject(Mesh mesh) : this(mesh, new StandardShader())
+        {
+
+        }
+        public RenderedObject(Mesh mesh, IShader shader)
         {
             Transform = new Transform();
             Mesh = mesh;
+            Shader = shader;
         }
     }
 }

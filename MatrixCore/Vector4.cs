@@ -1,11 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 
 namespace MatrixCore;
 
 public struct Vector4
 {
+    #region 运算符重载
     public static Vector4 operator +(Vector4 left, Vector4 right)
     {
         return new Vector4(left.X + right.X, left.Y + right.Y, left.Z + right.Z, left.W + right.W);
@@ -42,7 +41,6 @@ public struct Vector4
     {
         return !left.Equals(right);
     }
-    
     public static Vector4 Cross(Vector4 left, Vector4 right)
     {
         return new Vector4(
@@ -52,18 +50,40 @@ public struct Vector4
                 1
             );
     }
+    public static Vector4 Scale(Vector4 left, Vector4 right)
+    {
+        return new Vector4(left.X * right.X, left.Y * right.Y, left.Z * right.Z, left.W * right.W);
+    }
+    #endregion
 
-
+    #region 常用向量
     public static Vector4 One { get; } = new(1, 1, 1, 1);
     public static Vector4 Zero { get; } = new();
+    public static Vector4 Up { get; } = new(0, 1, 0, 0);
+    public static Vector4 Left { get; } = new(1, 0, 0, 0);
+    public static Vector4 Forward { get; } = new(0, 0, 1, 0);
+    #endregion
 
+    #region 基本属性
     public float X { get; set; }
     public float Y { get; set; }
     public float Z { get; set; }
     public float W { get; set; }
-    public float Magnitude => MathF.Sqrt(X * X + Y * Y + Z * Z);
-    public Vector4 Normalized => new(X / Magnitude, Y / Magnitude, Z / Magnitude);
+    #endregion
 
+    #region 相关计算
+    public float Magnitude => MathF.Sqrt(X * X + Y * Y + Z * Z + W * W);
+    public Vector4 Normalized
+    {
+        get
+        {
+            var magnitude = Magnitude;
+            return this / magnitude;
+        }
+    }
+    #endregion
+
+    #region 构造函数
     public Vector4(float x = 0, float y = 0, float z = 0, float w = 1)
     {
         X = x;
@@ -71,19 +91,19 @@ public struct Vector4
         Z = z;
         W = w;
     }
+    #endregion
 
+    #region 重载方法
     public override string ToString()
     {
         return $"({X:f},{Y:f},{Z:f},{W:f})";
     }
-
     public string ToString(bool showW)
     {
         if (!showW)
             return $"({X:f},{Y:f},{Z:f})";
         return ToString();
     }
-
     public override bool Equals([NotNullWhen(true)] object? obj)
     {
         if (obj is not Vector4 vector)
@@ -92,13 +112,13 @@ public struct Vector4
         if (vector.W != W)
             vector /= (vector.W / W);
 
-        return MathTool.Appropriate(X, vector.X) 
+        return MathTool.Appropriate(X, vector.X)
             && MathTool.Appropriate(Y, vector.Y)
             && MathTool.Appropriate(Z, vector.Z);
     }
-
     public override int GetHashCode()
     {
         return base.GetHashCode();
     }
+    #endregion
 }
