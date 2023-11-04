@@ -1,15 +1,19 @@
 ﻿using ILoveGraphics.Object;
 using MatrixCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ILoveGraphics.Light
 {
-    internal abstract class Light
+    public abstract class BaseLight
     {
+        /// <summary>
+        /// 场景中的所有光照
+        /// </summary>
+        public static List<BaseLight> Lights { get; } = new();
+        /// <summary>
+        /// 环境光
+        /// </summary>
+        public static Vector4 Ambient { get; set; } = Vector4.One * 0.1f;
+
         /// <summary>
         /// 光照信息
         /// </summary>
@@ -23,7 +27,7 @@ namespace ILoveGraphics.Light
         /// </summary>
         public float Intensity { get; set; }
 
-        public Light()
+        public BaseLight()
         {
             Color = Vector4.One;
             Transform = new Transform();

@@ -6,9 +6,17 @@ using MatrixCore;
 
 namespace ILoveGraphics.Test
 {
-    internal class Test
+    public class Test
     {
-        public static void TestRender()
+        public static Camera? Camera { get; set; }
+        public static List<RenderedObject> RenderedObjects { get; } = new List<RenderedObject>();
+        public static (int milliseconds, float seconds) Interval;
+        public static (int frameCount, DateTime startTime) RunInfo;
+        public static (float value, float step, float min, float max) Cycle;
+        public static (float value, float step, float min, float max) PingPong;
+        public static float RotateSpeed;
+
+        public static void SetConsoleRenderArgs()
         {
             // 方便调整屏幕大小
             Console.WriteLine("Press Enter To Start!");
@@ -20,87 +28,107 @@ namespace ILoveGraphics.Test
                 new ConsoleScreenDrawer(), Console.WindowWidth / 2, Console.WindowHeight
             );
 
+            SetDefaultRenderArgs(screen);
+        }
+
+        public static void SetDefaultRenderArgs(Screen screen)
+        {
+            // 光照
+            BaseLight.Lights.AddRange(new BaseLight[]{
+                new DirectionalLight
+                {
+                    Direction = new Vector4(0, 1, -1)
+                }
+            });
+
             // 相机
-            var camera = new Camera(screen)
+            Camera = new Camera(screen)
             {
-                FieldOfView = 90,
+                FieldOfView = 45,
                 Transform = new()
                 {
-                    Position = new(0, 0, -2.5f),
+                    Position = new(0, 0, -10f),
                 },
-                Light = new DirectionalLight
-                {
-                    Transform = new()
-                    {
-                        EulerAngle = new(45, 0, 0)
-                    }
-                }
+
             };
 
             // 需要渲染的所有物体
-            var renderedObjects = new RenderedObject[]
+            RenderedObjects.AddRange(new RenderedObject[]
             {
-                new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\Models\\Cube.obj"))
+                //new(Mesh.Cube())
+                //{
+                //    Transform = new()
+                //    {
+                //        Position = new(1, 0, 0),
+                //        Scale = new(1, 1, 1)
+                //    }
+                //},
+                //new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\Models\\Cube.obj"))
+                //{
+                //    Transform = new()
+                //    {
+                //        Position = new (-1, 0, 0),
+                //        Scale = Vector4.One * 0.5f
+                //    },
+                //},
+                new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\Models\\Heart.obj"))
                 {
-                    Transform = new()
+                    Shader = new Shader.StandardShader
                     {
-                        Position = new (-1, 0, 0),
-                        Scale = Vector4.One * 0.5f
-                    },
-                },
-                // new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\Models\\Heart.obj")),
-                // new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\Models\\Pose1.obj")),
-                new(Mesh.Cube())
-                {
-                    Transform = new()
-                    {
-                        Position = new(1, 0, 0),
-                        //Scale = new(2, 2, 2)
+                        BaseColor = new Vector4(1)
                     }
-                }
-            };
+                },
+                //new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\Models\\Pose1.obj")),
+            });
 
             // 刷新间隔
-            var interval = (milliseconds: 100, seconds: 0f);
-            interval.seconds = 0.001f * interval.milliseconds;
+            Interval = (milliseconds: 100, seconds: 0f);
+            Interval.seconds = 0.001f * Interval.milliseconds;
 
             // 运行信息
-            var runInfo = (frameCount: 0, startTime: DateTime.Now);
+            RunInfo = (frameCount: 0, startTime: DateTime.Now);
 
             // 变化参数
-            var cycle = (value: 0f, step: interval.seconds, min: 0, max: 2 * MathF.PI);
-            var pingPong = (value: 0f, step: interval.seconds, min: -1, max: 1);
+            Cycle = (value: 0f, step: Interval.seconds, min: 0f, max: 2 * MathF.PI);
+            PingPong = (value: 0f, step: Interval.seconds, min: -1f, max: 1f);
 
             // 旋转速度
-            var rotateSpeed = 1f;
-            while (true)
+            RotateSpeed = 1;
+        }
+
+        public static void Render(Action<RenderedObject>? update = null)
+        {
+            // 刷新间隔
+            Task.Delay(Interval.milliseconds).Wait();
+
+            // 统计帧数
+            RunInfo.frameCount++;
+
+            // 变化参数
+            MathTool.PingPong(PingPong.min, PingPong.max, ref PingPong.step, ref PingPong.value);
+            MathTool.Cycle(Cycle.min, Cycle.max, Cycle.step, ref Cycle.value);
+
+            foreach (var renderedObject in RenderedObjects)
             {
-                // 刷新间隔
-                Task.Delay(interval.milliseconds).Wait();
+                update?.Invoke(renderedObject);
+                // 
+                // renderedObject.Transform.EulerAngle = new Vector4((scale - 1.5f) * 2 * 15, 0, 0);
+                
+                // 360°旋转
+                // renderedObject.Transform.EulerAngle = new Vector4(RotateSpeed * Cycle.value, RotateSpeed * Cycle.value, RotateSpeed * Cycle.value);
+                
+                // 绕y轴旋转
+                renderedObject.Transform.EulerAngle = new Vector4(0, RotateSpeed * Cycle.value, 0);
 
-                // 统计帧数
-                runInfo.frameCount++;
-
-                // 变化参数
-                MathTool.PingPong(pingPong.min, pingPong.max, ref pingPong.step, ref pingPong.value);
-                MathTool.Cycle(cycle.min, cycle.max, cycle.step, ref cycle.value);
-
-                foreach (var renderedObject in renderedObjects)
-                {
-                    // 模型变化
-                    // renderedObjects[0].Transform.EulerAngle = new Vector4((scale - 1.5f) * 2 * 15, 0, 0);
-                    renderedObject.Transform.EulerAngle = new Vector4(rotateSpeed * cycle.value, rotateSpeed * cycle.value, rotateSpeed * cycle.value);
-                    // renderedObjects[0].Transform.EulerAngle = new Vector4(45, rotateScale * time, 0);
-                    // renderedObject.Transform.EulerAngle = new Vector4(0, rotateSpeed * cycle.value, 0);
-                    // renderedObjects[0].Transform.Scale = new Vector4(scale, 2.2f - scale);
-                }
-
-                // 渲染
-                camera.Render(renderedObjects, $"""
-                resolution: ({screen.Width}, {screen.Height}, {screen.Width * screen.Width})
-                fps: {runInfo.frameCount / (DateTime.Now - runInfo.startTime).TotalSeconds:F2}
-                """);
+                // x, y轴来回缩放
+                // renderedObjects[0].Transform.Scale = new Vector4(scale, 2.2f - scale);
             }
+
+            // 渲染
+            Camera?.Render(RenderedObjects, $"""
+                resolution: ({Camera.Screen.Width}, {Camera.Screen.Height}, {Camera.Screen.Width * Camera.Screen.Width})
+                fps: {RunInfo.frameCount / (DateTime.Now - RunInfo.startTime).TotalSeconds:F2}
+                """);
         }
     }
 }

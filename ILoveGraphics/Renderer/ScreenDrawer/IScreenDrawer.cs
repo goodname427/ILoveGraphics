@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ILoveGraphics.Renderer.ScreenDrawer
 {
-    internal interface IScreenDrawer
+    public interface IScreenDrawer
     {
         /// <summary>
         /// 将缓冲区内容输出

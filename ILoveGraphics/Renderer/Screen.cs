@@ -1,11 +1,62 @@
-﻿using ILoveGraphics.Renderer.ScreenDrawer;
+﻿using ILoveGraphics.Object;
+using ILoveGraphics.Renderer.ScreenDrawer;
+using ILoveGraphics.Shader;
 using MatrixCore;
-using System.Text;
 
 namespace ILoveGraphics.Renderer
 {
-    internal class Screen
+    public class Screen
     {
+        /// <summary>
+        /// 判断一个点是否在三角形里面
+        /// </summary>
+        /// <param name="v"></param>
+        /// <param name="sides"></param>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        private static bool IsInside(Vector4[] v, Vector4[] sides, Vector4 p)
+        {
+            var ap = p - v[0];
+            var bp = p - v[1];
+            var cp = p - v[2];
+            var dir1 = MathF.Sign(Vector4.Cross(sides[0], ap).Z);
+            var dir2 = MathF.Sign(Vector4.Cross(sides[1], bp).Z);
+            var dir3 = MathF.Sign(Vector4.Cross(sides[2], cp).Z);
+
+            return dir1 == dir2 && dir2 == dir3;
+        }
+        /// <summary>
+        /// 求重心坐标
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        private static Vector4 GetBarycentric2D(Vector4 p, Vector4[] v)
+        {
+            var x = p.X;
+            var y = p.Y;
+
+            float c1 = (x * (v[1].Y - v[2].Y) + (v[2].X - v[1].X) * y + v[1].X * v[2].Y - v[2].X * v[1].Y) / (v[0].X * (v[1].Y - v[2].Y) + (v[2].X - v[1].X) * v[0].Y + v[1].X * v[2].Y - v[2].X * v[1].Y);
+            float c2 = (x * (v[2].Y - v[0].Y) + (v[0].X - v[2].X) * y + v[2].X * v[0].Y - v[0].X * v[2].Y) / (v[1].X * (v[2].Y - v[0].Y) + (v[0].X - v[2].X) * v[1].Y + v[2].X * v[0].Y - v[0].X * v[2].Y);
+            float c3 = (x * (v[0].Y - v[1].Y) + (v[1].X - v[0].X) * y + v[0].X * v[1].Y - v[1].X * v[0].Y) / (v[2].X * (v[0].Y - v[1].Y) + (v[1].X - v[0].X) * v[2].Y + v[0].X * v[1].Y - v[1].X * v[0].Y);
+            return new(c1, c2, c3);
+        }
+        /// <summary>
+        /// 插值
+        /// </summary>
+        /// <param name="alpha"></param>
+        /// <param name="beta"></param>
+        /// <param name="gamma"></param>
+        /// <param name="vert1"></param>
+        /// <param name="vert2"></param>
+        /// <param name="vert3"></param>
+        /// <param name="weight"></param>
+        /// <returns></returns>
+        private static Vector4 Interpolate(Vector4 barycentric, Vector4[] v, float weight)
+        {
+            return (barycentric.X * v[0] + barycentric.Y * v[1] + barycentric.Z * v[2]) / weight;
+        }
+
         private readonly Vector4[,] _frameBuffer;
         private readonly float[,] _zBuffer;
 
@@ -18,13 +69,22 @@ namespace ILoveGraphics.Renderer
         /// </summary>
         public int Height { get; init; } = 100;
         /// <summary>
-        /// 屏幕绘制器
-        /// </summary>
-        public IScreenDrawer ScreenDrawer { get; } 
-        /// <summary>
         /// 视口变换
         /// </summary>
         public Matrix ViewportMatrix { get; }
+
+        /// <summary>
+        /// 使用多屏绘制器
+        /// </summary>
+        public bool UseMutilScreenDrawer { get; set; } = false;
+        /// <summary>
+        /// 屏幕绘制器
+        /// </summary>
+        public IScreenDrawer ScreenDrawer => ScreenDrawers[0];
+        /// <summary>
+        /// 屏幕绘制器
+        /// </summary>
+        public List<IScreenDrawer> ScreenDrawers { get; } = new List<IScreenDrawer>();
 
         public Screen() : this(new ConsoleScreenDrawer(), Console.WindowWidth / 2, Console.WindowHeight)
         {
@@ -36,7 +96,7 @@ namespace ILoveGraphics.Renderer
         }
         public Screen(IScreenDrawer screenDrawer, int width, int height)
         {
-            ScreenDrawer = screenDrawer;
+            ScreenDrawers.Add(screenDrawer);
             Width = width;
             Height = height;
 
@@ -58,42 +118,52 @@ namespace ILoveGraphics.Renderer
         /// </summary>
         /// <param name="vertexes"></param>
         /// <param name="triangles"></param>
-        public void Rasterize(Vector4 a, Vector4 b, Vector4 c, Vector4 color)
+        public void Rasterize(Triangle triangle, IShader shader, Vector4 eyePosition)
         {
+            var v = triangle.Vertexs;
+
             // 获取bounding box
-            var left = MathF.Max(MathTool.Min(a.X, b.X, c.X), 0);
-            var right = MathF.Min(MathTool.Max(a.X, b.X, c.X), Width - 1);
-            var bottom = MathF.Max(MathTool.Min(a.Y, b.Y, c.Y), 0);
-            var top = MathF.Min(MathTool.Max(a.Y, b.Y, c.Y), Height - 1);
+            var left = MathF.Max(MathTool.Min(v[0].X, v[1].X, v[2].X), 0);
+            var right = MathF.Min(MathTool.Max(v[0].X, v[1].X, v[2].X), Width - 1);
+            var bottom = MathF.Max(MathTool.Min(v[0].Y, v[1].Y, v[2].Y), 0);
+            var top = MathF.Min(MathTool.Max(v[0].Y, v[1].Y, v[2].Y), Height - 1);
 
             // 三角形三边
-            var ab = b - a;
-            var bc = c - b;
-            var ca = a - c;
-            // 法线
-            var n = Vector4.Cross(ab, bc);
+            var sides = new Vector4[]{
+                v[1] - v[0],
+                v[2] - v[1],
+                v[0] - v[2]
+            };
+
             for (int x = (int)left; x <= right; x++)
             {
                 for (int y = (int)bottom; y <= top; y++)
                 {
                     // inside
-                    var p = new Vector4(x + 0.5f, y + 0.5f, a.Z);
-                    var ap = p - a;
-                    var bp = p - b;
-                    var cp = p - c;
-                    var dir1 = MathF.Sign(Vector4.Cross(ab, ap).Z);
-                    var dir2 = MathF.Sign(Vector4.Cross(bc, bp).Z);
-                    var dir3 = MathF.Sign(Vector4.Cross(ca, cp).Z);
+                    var p = new Vector4(x + 0.5f, y + 0.5f);
+
+                    if (!IsInside(v, sides, p))
+                        continue;
+
+                    var barycentric = GetBarycentric2D(p, v);
 
                     // z buffer
-                    var z = a.Z - n * ap / n.Z;
+                    var z = barycentric.X * v[0].Z + barycentric.Y * v[1].Z + barycentric.Z * v[2].Z;
 
                     // 采样
-                    if (dir1 == dir2 && dir2 == dir3 && z > _zBuffer[x, y])
+                    if (z < _zBuffer[x, y])
+                        continue;
+                    _zBuffer[x, y] = z;
+
+
+                    _frameBuffer[x, y] = shader.GetColor(new()
                     {
-                        _frameBuffer[x, y] = color;
-                        _zBuffer[x, y] = z;
-                    }
+                        ShaderPosition = Interpolate(barycentric, triangle.WorldPosition, 1),
+                        Normal = Interpolate(barycentric, triangle.Normals, 1),
+                        TextureCoord = Interpolate(barycentric, triangle.TextureCoords, 1),
+                        EyePosition = eyePosition
+                    });
+
                 }
             }
         }
@@ -119,7 +189,17 @@ namespace ILoveGraphics.Renderer
         /// </summary>
         public void Draw(string message = "")
         {
-            ScreenDrawer.Draw(_frameBuffer, message);
+            if (!UseMutilScreenDrawer)
+            {
+                ScreenDrawer.Draw(_frameBuffer, message);
+            }
+            else
+            {
+                foreach (var screenDrawer in ScreenDrawers)
+                {
+                    screenDrawer.Draw(_frameBuffer, message);
+                }
+            }
         }
     }
 }

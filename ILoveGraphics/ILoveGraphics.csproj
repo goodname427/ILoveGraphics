@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspose.Imaging" Version="23.9.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\MatrixCore\MatrixCore.csproj" />
   </ItemGroup>
 

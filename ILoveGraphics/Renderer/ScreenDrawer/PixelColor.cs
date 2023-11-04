@@ -2,7 +2,7 @@
 
 namespace ILoveGraphics.Renderer.ScreenDrawer
 {
-    internal struct PixelColor
+    public struct PixelColor
     {
         public static PixelColor operator *(PixelColor left, float right)
         {

@@ -2,4 +2,8 @@
 using MatrixCore;
 
 //Mesh.Load(@"E:\CGL\Programs\CSharp\ILoveGraphics\ILoveGraphics\models\untitled.obj");
-Test.TestRender();
+Test.SetConsoleRenderArgs();
+while (true)
+{
+    Test.Render();
+}

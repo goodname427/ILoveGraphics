@@ -6,18 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ILoveGraphics.Renderer.Shader
+namespace ILoveGraphics.Shader
 {
-    interface IShader
+    public interface IShader
     {
         Vector4 GetColor(ShaderArgs args);
 
         public class ShaderArgs
         {
-            public Vector4 A { get; init; }
-            public Vector4 B { get; init; }
-            public Vector4 C { get; init; }
-            public required Light.Light Light { get; init; }
+            public required Vector4 ShaderPosition { get; init; }
+            public required Vector4 TextureCoord { get; init; }
+            public required Vector4 Normal { get; init; }
             public Vector4 EyePosition { get; init; }
         }
     }

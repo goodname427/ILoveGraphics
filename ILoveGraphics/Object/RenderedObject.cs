@@ -1,8 +1,8 @@
-﻿using ILoveGraphics.Renderer.Shader;
+﻿using ILoveGraphics.Shader;
 
 namespace ILoveGraphics.Object
 {
-    internal class RenderedObject
+    public class RenderedObject
     {
         /// <summary>
         /// 物体的变换信息

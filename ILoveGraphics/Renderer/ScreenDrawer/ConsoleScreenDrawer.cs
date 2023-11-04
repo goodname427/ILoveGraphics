@@ -3,7 +3,7 @@ using System.Text;
 
 namespace ILoveGraphics.Renderer.ScreenDrawer
 {
-    internal class ConsoleScreenDrawer : IScreenDrawer
+    public class ConsoleScreenDrawer : IScreenDrawer
     {
         public ConsoleScreenDrawer()
         {
@@ -15,6 +15,7 @@ namespace ILoveGraphics.Renderer.ScreenDrawer
             var width = frameBuffer.GetLength(0);
             var height = frameBuffer.GetLength(1);
             Console.SetCursorPosition(0, 0);
+            
             var output = new StringBuilder();
             var color = ConsoleColor.White;
 
