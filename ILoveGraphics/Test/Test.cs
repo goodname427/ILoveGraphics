@@ -113,15 +113,15 @@ namespace ILoveGraphics.Test
                 update?.Invoke(renderedObject);
                 // 
                 // renderedObject.Transform.EulerAngle = new Vector4((scale - 1.5f) * 2 * 15, 0, 0);
-                
+
                 // 360°旋转
-                // renderedObject.Transform.EulerAngle = new Vector4(RotateSpeed * Cycle.value, RotateSpeed * Cycle.value, RotateSpeed * Cycle.value);
-                
+                renderedObject.Transform.EulerAngle = new Vector4(RotateSpeed * Cycle.value, RotateSpeed * Cycle.value, RotateSpeed * Cycle.value);
+
                 // 绕y轴旋转
                 renderedObject.Transform.EulerAngle = new Vector4(0, RotateSpeed * Cycle.value, 0);
 
                 // x, y轴来回缩放
-                // renderedObjects[0].Transform.Scale = new Vector4(scale, 2.2f - scale);
+                // renderedObject.Transform.Scale = new Vector4(PingPong.value + 2, -PingPong.value + 2, 1);
             }
 
             // 渲染
