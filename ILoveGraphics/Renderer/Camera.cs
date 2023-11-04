@@ -1,5 +1,4 @@
-﻿using ILoveGraphics.Light;
-using ILoveGraphics.Object;
+﻿using ILoveGraphics.Object;
 using MatrixCore;
 
 namespace ILoveGraphics.Renderer
@@ -136,7 +135,7 @@ namespace ILoveGraphics.Renderer
                 foreach (var triangleIndex in renderedObject.Mesh.Triangles)
                 {
                     Screen.Rasterize(
-                        triangleIndex.Triangle(screenVertexs, worldVertexs, normals, renderedObject.Mesh.TextureCoords), 
+                        triangleIndex.Triangle(screenVertexs, worldVertexs, normals, renderedObject.Mesh.TextureCoords),
                         renderedObject.Shader,
                         Transform.Position
                     );

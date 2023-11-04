@@ -16,6 +16,7 @@ namespace DrawForm
             color.Y = MathTool.Clamp(color.Y, 0, 1);
             color.Z = MathTool.Clamp(color.Z, 0, 1);
             color *= 255;
+            
             return Color.FromArgb((int)color.X, (int)color.Y, (int)color.Z);
         }
 

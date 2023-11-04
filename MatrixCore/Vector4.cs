@@ -72,7 +72,8 @@ public struct Vector4
     #endregion
 
     #region 相关计算
-    public float Magnitude => MathF.Sqrt(X * X + Y * Y + Z * Z + W * W);
+    public float Magnitude => MathF.Sqrt(SqrtMagnitude);
+    public float SqrtMagnitude => X * X + Y * Y + Z * Z + W * W;
     public Vector4 Normalized
     {
         get

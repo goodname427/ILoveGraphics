@@ -1,13 +1,29 @@
 ﻿using MatrixCore;
+using System.Xml.Schema;
 
 namespace ILoveGraphics.Object
 {
     public class Mesh
     {
-        #region 
-        public static Mesh Load(string filename)
+        /// <summary>
+        /// 模型路径
+        /// </summary>
+        public static string Path { get; } = "E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\Models\\";
+
+        #region 预制体
+        /// <summary>
+        /// 加载obj文件
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static Mesh Load(string path)
         {
-            var texts = File.ReadAllLines(filename);
+            if (!File.Exists(path))
+            {
+                path = Path + path;
+            }
+
+            var texts = File.ReadAllLines(path);
             var vertexs = new List<Vector4>();
             var normals = new List<Vector4>();
             var textureCoords = new List<Vector4>();
@@ -17,9 +33,12 @@ namespace ILoveGraphics.Object
                 if (string.IsNullOrWhiteSpace(text))
                     continue;
 
-                var args = text.Split(' ');
+                var args = text.Split(' ').Where(arg => !string.IsNullOrWhiteSpace(arg)).ToArray();
                 var tag = args[0];
                 args = args[1..^0];
+
+                if (args is null)
+                    continue;
 
                 switch (tag)
                 {
@@ -91,6 +110,10 @@ namespace ILoveGraphics.Object
                 TextureCoords = textureCoords.ToArray()
             };
         }
+        /// <summary>
+        /// cube mesh
+        /// </summary>
+        /// <returns></returns>
         public static Mesh Cube()
         {
             return new Mesh(
@@ -158,7 +181,10 @@ namespace ILoveGraphics.Object
                 }
             );
         }
-
+        /// <summary>
+        /// 爱心平面
+        /// </summary>
+        /// <returns></returns>
         public static Mesh HeartPlane()
         {
             return new Mesh(

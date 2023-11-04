@@ -1,5 +1,6 @@
 ﻿using ILoveGraphics.Light;
 using ILoveGraphics.Object;
+using ILoveGraphics.Test;
 using MatrixCore;
 
 namespace ILoveGraphics.Shader
@@ -15,7 +16,7 @@ namespace ILoveGraphics.Shader
             // 视线
             var eyeDir = (args.EyePosition - args.ShaderPosition).Normalized;
             var color = Vector4.Zero;
-            foreach (var light in BaseLight.Lights)
+            foreach (var light in RenderedScene.Lights)
             {
                 // 光照方向
                 var lightDir = light.GetLightDirection(args.ShaderPosition);
@@ -30,7 +31,7 @@ namespace ILoveGraphics.Shader
                 color += SpecularColor * intensity * MathF.Pow(MathF.Max(0, args.Normal * h), 128);
 
                 // 环境光
-                color += BaseLight.Ambient;
+                color += RenderedScene.Ambient;
             }
 
             color.W = 1;

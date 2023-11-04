@@ -31,6 +31,9 @@
             components = new System.ComponentModel.Container();
             Btn_Start = new Button();
             Tmr_Update = new System.Windows.Forms.Timer(components);
+            TBox_Scale = new TextBox();
+            Lbl_1 = new Label();
+            TBox_Message = new TextBox();
             SuspendLayout();
             // 
             // Btn_Start
@@ -48,20 +51,57 @@
             Tmr_Update.Interval = 1;
             Tmr_Update.Tick += Tmr_Update_Tick;
             // 
-            // DrawForm
+            // TBox_Scale
+            // 
+            TBox_Scale.Location = new Point(195, 12);
+            TBox_Scale.Name = "TBox_Scale";
+            TBox_Scale.Size = new Size(100, 23);
+            TBox_Scale.TabIndex = 1;
+            TBox_Scale.Text = "2";
+            // 
+            // Lbl_1
+            // 
+            Lbl_1.AutoSize = true;
+            Lbl_1.Location = new Point(146, 15);
+            Lbl_1.Name = "Lbl_1";
+            Lbl_1.Size = new Size(32, 17);
+            Lbl_1.TabIndex = 2;
+            Lbl_1.Text = "缩放";
+            // 
+            // TBox_Message
+            // 
+            TBox_Message.BackColor = Color.White;
+            TBox_Message.BorderStyle = BorderStyle.None;
+            TBox_Message.Location = new Point(12, 12);
+            TBox_Message.Multiline = true;
+            TBox_Message.Name = "TBox_Message";
+            TBox_Message.ReadOnly = true;
+            TBox_Message.Size = new Size(177, 52);
+            TBox_Message.TabIndex = 3;
+            TBox_Message.Visible = false;
+            // 
+            // FormScreenDrawer
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(684, 661);
+            Controls.Add(TBox_Message);
+            Controls.Add(Lbl_1);
+            Controls.Add(TBox_Scale);
             Controls.Add(Btn_Start);
-            Name = "DrawForm";
+            Name = "FormScreenDrawer";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "DrawForm";
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
         private Button Btn_Start;
         private System.Windows.Forms.Timer Tmr_Update;
+        private TextBox TBox_Scale;
+        private Label Lbl_1;
+        private TextBox TBox_Message;
     }
 }

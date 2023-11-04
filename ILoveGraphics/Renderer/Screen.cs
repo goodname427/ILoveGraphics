@@ -39,6 +39,10 @@ namespace ILoveGraphics.Renderer
             float c1 = (x * (v[1].Y - v[2].Y) + (v[2].X - v[1].X) * y + v[1].X * v[2].Y - v[2].X * v[1].Y) / (v[0].X * (v[1].Y - v[2].Y) + (v[2].X - v[1].X) * v[0].Y + v[1].X * v[2].Y - v[2].X * v[1].Y);
             float c2 = (x * (v[2].Y - v[0].Y) + (v[0].X - v[2].X) * y + v[2].X * v[0].Y - v[0].X * v[2].Y) / (v[1].X * (v[2].Y - v[0].Y) + (v[0].X - v[2].X) * v[1].Y + v[2].X * v[0].Y - v[0].X * v[2].Y);
             float c3 = (x * (v[0].Y - v[1].Y) + (v[1].X - v[0].X) * y + v[0].X * v[1].Y - v[1].X * v[0].Y) / (v[2].X * (v[0].Y - v[1].Y) + (v[1].X - v[0].X) * v[2].Y + v[0].X * v[1].Y - v[1].X * v[0].Y);
+
+            if (float.IsNaN(c1) || float.IsNaN(c2) || float.IsNaN(c3))
+                return new(1);
+
             return new(c1, c2, c3);
         }
         /// <summary>
@@ -163,7 +167,6 @@ namespace ILoveGraphics.Renderer
                         TextureCoord = Interpolate(barycentric, triangle.TextureCoords, 1),
                         EyePosition = eyePosition
                     });
-
                 }
             }
         }
