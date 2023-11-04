@@ -30,8 +30,8 @@ namespace DrawForm
                 }
             }
 
-            //_graphics.DrawString(message, Font, new SolidBrush(Color.Green), new PointF(10, 10));
-            //var font = new Font("华文新魏", 70f, FontStyle.Bold);
+            _graphics.DrawString(message, Font, new SolidBrush(Color.Green), new PointF(10, 10));
+            //var font = new Font("微软雅黑", 70f, FontStyle.Bold);
             //_graphics.DrawString("祝姐姐18岁生日快乐", font, new SolidBrush(Color.Pink), new PointF((Width / 2) - (font.Size * 6.5f), Height - 200));
         }
 
