@@ -1,6 +1,6 @@
 ﻿namespace DrawForm
 {
-    partial class DrawForm
+    partial class FormScreenDrawer
     {
         /// <summary>
         ///  Required designer variable.

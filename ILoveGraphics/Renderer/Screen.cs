@@ -159,7 +159,7 @@ namespace ILoveGraphics.Renderer
                     _frameBuffer[x, y] = shader.GetColor(new()
                     {
                         ShaderPosition = Interpolate(barycentric, triangle.WorldPosition, 1),
-                        Normal = Interpolate(barycentric, triangle.Normals, 1),
+                        Normal = Interpolate(barycentric, triangle.Normals, 1).Normalized,
                         TextureCoord = Interpolate(barycentric, triangle.TextureCoords, 1),
                         EyePosition = eyePosition
                     });

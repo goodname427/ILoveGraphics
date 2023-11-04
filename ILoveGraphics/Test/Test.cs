@@ -3,18 +3,25 @@ using ILoveGraphics.Object;
 using ILoveGraphics.Renderer;
 using ILoveGraphics.Renderer.ScreenDrawer;
 using MatrixCore;
+using System.Reflection;
+using System;
 
 namespace ILoveGraphics.Test
 {
     public class Test
     {
+        public static string Path { get; } = "E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\Models\\";
+
+
         public static Camera? Camera { get; set; }
         public static List<RenderedObject> RenderedObjects { get; } = new List<RenderedObject>();
+        
         public static (int milliseconds, float seconds) Interval;
         public static (int frameCount, DateTime startTime) RunInfo;
         public static (float value, float step, float min, float max) Cycle;
         public static (float value, float step, float min, float max) PingPong;
         public static float RotateSpeed;
+        
 
         public static void SetConsoleRenderArgs()
         {
@@ -37,7 +44,7 @@ namespace ILoveGraphics.Test
             BaseLight.Lights.AddRange(new BaseLight[]{
                 new DirectionalLight
                 {
-                    Direction = new Vector4(0, 1, -1)
+                    Direction = new Vector4(0, 1, -1),
                 }
             });
 
@@ -49,7 +56,6 @@ namespace ILoveGraphics.Test
                 {
                     Position = new(0, 0, -10f),
                 },
-
             };
 
             // 需要渲染的所有物体
@@ -63,7 +69,7 @@ namespace ILoveGraphics.Test
                 //        Scale = new(1, 1, 1)
                 //    }
                 //},
-                //new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\Models\\Cube.obj"))
+                //new(Mesh.Load(Path + "Cube.obj"))
                 //{
                 //    Transform = new()
                 //    {
@@ -71,14 +77,25 @@ namespace ILoveGraphics.Test
                 //        Scale = Vector4.One * 0.5f
                 //    },
                 //},
-                new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\Models\\Heart.obj"))
+                //new(Mesh.Load(Path + "Heart.obj"))
+                //{
+                //    Shader = new Shader.StandardShader
+                //    {
+                //        BaseColor = new Vector4(1)
+                //    }
+                //},
+                //new(Mesh.Load(Path + "Pose1.obj")),
+                new(Mesh.Load(Path + "Spot\\spot_triangulated_good.obj"))
                 {
+                    Transform = new()
+                    {
+                        Scale = Vector4.One * 2
+                    },
                     Shader = new Shader.StandardShader
                     {
-                        BaseColor = new Vector4(1)
+                        SpecularColor = Vector4.One * 0.85f,
                     }
-                },
-                //new(Mesh.Load("E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\Models\\Pose1.obj")),
+                }
             });
 
             // 刷新间隔

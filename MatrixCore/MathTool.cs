@@ -81,5 +81,21 @@
 
             return a;
         }
+        /// <summary>
+        /// 如果一个数在两个数之间, 则返回这个数, 否则返回边界
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
+        public static int Clamp(int a, int min, int max)
+        {
+            if (a < min)
+                return min;
+            if (a > max)
+                return max;
+
+            return a;
+        }
     }
 }
