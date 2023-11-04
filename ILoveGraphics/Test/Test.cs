@@ -77,25 +77,25 @@ namespace ILoveGraphics.Test
                 //        Scale = Vector4.One * 0.5f
                 //    },
                 //},
-                //new(Mesh.Load(Path + "Heart.obj"))
-                //{
-                //    Shader = new Shader.StandardShader
-                //    {
-                //        BaseColor = new Vector4(1)
-                //    }
-                //},
-                //new(Mesh.Load(Path + "Pose1.obj")),
-                new(Mesh.Load(Path + "Spot\\spot_triangulated_good.obj"))
+                new(Mesh.Load(Path + "Heart.obj"))
                 {
-                    Transform = new()
-                    {
-                        Scale = Vector4.One * 2
-                    },
                     Shader = new Shader.StandardShader
                     {
-                        SpecularColor = Vector4.One * 0.85f,
+                        BaseColor = new Vector4(1)
                     }
-                }
+                },
+                //new(Mesh.Load(Path + "Pose1.obj")),
+                //new(Mesh.Load(Path + "Spot\\spot_triangulated_good.obj"))
+                //{
+                //    Transform = new()
+                //    {
+                //        Scale = Vector4.One * 2
+                //    },
+                //    Shader = new Shader.StandardShader
+                //    {
+                //        SpecularColor = Vector4.One * 0.85f,
+                //    }
+                //}
             });
 
             // 刷新间隔
@@ -132,7 +132,7 @@ namespace ILoveGraphics.Test
                 // renderedObject.Transform.EulerAngle = new Vector4((scale - 1.5f) * 2 * 15, 0, 0);
 
                 // 360°旋转
-                renderedObject.Transform.EulerAngle = new Vector4(RotateSpeed * Cycle.value, RotateSpeed * Cycle.value, RotateSpeed * Cycle.value);
+                // renderedObject.Transform.EulerAngle = new Vector4(RotateSpeed * Cycle.value, RotateSpeed * Cycle.value, RotateSpeed * Cycle.value);
 
                 // 绕y轴旋转
                 renderedObject.Transform.EulerAngle = new Vector4(0, RotateSpeed * Cycle.value, 0);

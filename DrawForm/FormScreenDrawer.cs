@@ -30,7 +30,9 @@ namespace DrawForm
                 }
             }
 
-            _graphics.DrawString(message, Font, new SolidBrush(Color.Green), new PointF(10, 10));
+            //_graphics.DrawString(message, Font, new SolidBrush(Color.Green), new PointF(10, 10));
+            //var font = new Font("华文新魏", 70f, FontStyle.Bold);
+            //_graphics.DrawString("祝姐姐18岁生日快乐", font, new SolidBrush(Color.Pink), new PointF((Width / 2) - (font.Size * 6.5f), Height - 200));
         }
 
         private void Btn_Start_Click(object sender, EventArgs e)
@@ -48,7 +50,8 @@ namespace DrawForm
 
 
             Test.SetDefaultRenderArgs(screen);
-            ((StandardShader)Test.RenderedObjects[0].Shader).Texture = ColorHelper.GetTexture(Test.Path + "Spot\\spot_texture.png");
+            
+            //((StandardShader)Test.RenderedObjects[0].Shader).Texture = ColorHelper.GetTexture(Test.Path + "Spot\\spot_texture.png");
 
 
             Btn_Start.Enabled = false;
