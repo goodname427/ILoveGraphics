@@ -109,10 +109,6 @@ namespace ILoveGraphics.Renderer
         {
             Screen.Clear();
 
-            var viewMatrix = ViewMatrix;
-            var projectionMatrix = OrthogonalizedProjectionMatrix * PerspectProjectionMatrix;
-            //var viewingMatrix = projectionMatrix * viewMatrix;
-            var pvMatrix = Screen.ViewportMatrix * projectionMatrix;
             var vvMatrix = Screen.ViewportMatrix * ViewingMatrix;
             foreach (var renderedObject in renderedObjects)
             {
@@ -126,11 +122,7 @@ namespace ILoveGraphics.Renderer
                 var normals = (from vertex in renderedObject.Mesh.Normals
                                select transformMatrix * vertex).ToArray();
 
-                // 视图变换
-                //var viewVertexs = (from vertex in worldVertexs
-                //                   select PerspectProjectionMatrix * viewMatrix * vertex).ToArray();
-
-                //投影+视口变换, W存储z轴的正负信息
+                // 视图+投影+视口变换, W存储z轴的正负信息
                 var screenVertexs = (from vertex in worldVertexs
                                      let transVertex = vvMatrix *  vertex
                                      let w = transVertex.W
@@ -143,9 +135,9 @@ namespace ILoveGraphics.Renderer
                     int i = 0;
                     for (; i < 3; i++)
                     {
-                        var index = triangleIndex.Vertexs[i];
+                        var v = screenVertexs[triangleIndex.Vertexs[i]];
 
-                        if (!(screenVertexs[index].W > 0 || screenVertexs[index].X < 0 || screenVertexs[index].X >= Screen.Width || screenVertexs[index].Y < 0 || screenVertexs[index].Y >= Screen.Height))
+                        if (!(v.W > 0 || v.X < 0 || v.X >= Screen.Width || v.Y < 0 || v.Y >= Screen.Height))
                             break;
                     }
 

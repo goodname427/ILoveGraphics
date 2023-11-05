@@ -130,6 +130,14 @@ namespace ILoveGraphics.Test
 
         #region 预设好的操作
         /// <summary>
+        /// 使灯光绕y轴旋转
+        /// </summary>
+        public static void RotateLight()
+        {
+            var dir = new Vector4(MathF.Cos(Cycle.value), -1 , MathF.Sin(Cycle.value));
+            ((DirectionalLight)Lights[0]).Direction = dir;
+        }
+        /// <summary>
         /// 绕y轴旋转
         /// </summary>
         /// <param name="renderedObject"></param>

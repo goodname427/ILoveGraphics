@@ -92,8 +92,7 @@
             Name = "FormScreenDrawer";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "DrawForm";
-            KeyPress += FormScreenDrawer_KeyPress;
-            MouseClick += FormScreenDrawer_MouseClick;
+            KeyDown += FormScreenDrawer_KeyDown;
             MouseMove += FormScreenDrawer_MouseMove;
             ResumeLayout(false);
             PerformLayout();

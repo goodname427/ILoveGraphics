@@ -1,5 +1,6 @@
 //#define IMAGE_MODE
 
+using ILoveGraphics.Light;
 using ILoveGraphics.Object;
 using ILoveGraphics.Renderer.ScreenDrawer;
 using ILoveGraphics.Shader;
@@ -33,7 +34,7 @@ namespace DrawForm
         {
             Transform = new()
             {
-                Scale = Vector4.One * 0.5f,
+                Scale = Vector4.One * 2,
                 EulerAngle = new Vector4(0, 90, 0)
             },
             Shader = new StandardShader
@@ -110,7 +111,7 @@ namespace DrawForm
 
             RenderedScene.RenderedObjects.AddRange(new RenderedObject[]
             {
-                RenderedObject.Heart
+                Spot
             });
             RenderedScene.SetDefaultRenderArgs(screen);
 
@@ -129,17 +130,15 @@ namespace DrawForm
 
         private void Tmr_Update_Tick(object sender, EventArgs e)
         {
+            //Focus();
             RenderedScene.Update(
-                //null,
+                null
                 //() => ObjectController.DoMove(RenderedScene.Camera)
-                //() => RenderedScene.Camera.Transform.EulerAngle = new Vector4(RenderedScene.Cycle.value, RenderedScene.Cycle.value, RenderedScene.Cycle.value)
-            //RenderedScene.RotateAroundY
-            );
-        }
+                //RenderedScene.RotateLight
 
-        private void FormScreenDrawer_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            //ObjectController.KeyInput(sender, e);
+                ,RenderedScene.RotateAroundY
+            );
+            //ObjectController.Reset();
         }
 
         private void FormScreenDrawer_MouseMove(object sender, MouseEventArgs e)
@@ -152,6 +151,11 @@ namespace DrawForm
             if (RenderedScene.Camera is null)
                 return;
             RenderedScene.Camera.Transform.Position = -RenderedScene.Camera.Transform.Position;
+        }
+
+        private void FormScreenDrawer_KeyDown(object sender, KeyEventArgs e)
+        {
+            ObjectController.KeyInput(sender, e);
         }
     }
 }
