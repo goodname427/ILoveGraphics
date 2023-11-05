@@ -11,7 +11,7 @@ RenderedScene.RenderedObjects.AddRange(new RenderedObject[]
 RenderedScene.SetConsoleRenderArgs();
 while (true)
 {
-    RenderedScene.Update(RenderedScene.RotateAroundY);
+    RenderedScene.Update(null, RenderedScene.RotateAroundY);
 }
 
 //Mesh.Load(Test.Path + "Prince\\Scene.obj");

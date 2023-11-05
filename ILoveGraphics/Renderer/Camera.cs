@@ -3,12 +3,8 @@ using MatrixCore;
 
 namespace ILoveGraphics.Renderer
 {
-    public class Camera
+    public class Camera : Object.Object
     {
-        /// <summary>
-        /// 相机变换
-        /// </summary>
-        public Transform Transform { get; init; }
         /// <summary>
         /// 相机宽高比
         /// </summary>
@@ -113,7 +109,11 @@ namespace ILoveGraphics.Renderer
         {
             Screen.Clear();
 
-            var viewingMatrix = ViewingMatrix;
+            var viewMatrix = ViewMatrix;
+            var projectionMatrix = OrthogonalizedProjectionMatrix * PerspectProjectionMatrix;
+            //var viewingMatrix = projectionMatrix * viewMatrix;
+            var pvMatrix = Screen.ViewportMatrix * projectionMatrix;
+            var vvMatrix = Screen.ViewportMatrix * ViewingMatrix;
             foreach (var renderedObject in renderedObjects)
             {
                 var transformMatrix = renderedObject.Transform.TransformMatrix;
@@ -126,14 +126,33 @@ namespace ILoveGraphics.Renderer
                 var normals = (from vertex in renderedObject.Mesh.Normals
                                select transformMatrix * vertex).ToArray();
 
-                // 视图+投影+视口变换
+                // 视图变换
+                //var viewVertexs = (from vertex in worldVertexs
+                //                   select PerspectProjectionMatrix * viewMatrix * vertex).ToArray();
+
+                //投影+视口变换, W存储z轴的正负信息
                 var screenVertexs = (from vertex in worldVertexs
-                                     let vertex1 = Screen.ViewportMatrix * viewingMatrix * vertex
-                                     select vertex1 / vertex1.W).ToArray();
+                                     let transVertex = vvMatrix *  vertex
+                                     let w = transVertex.W
+                                     select transVertex with { W = MathF.Abs(w) } / w).ToArray();
 
                 // 光栅化
                 foreach (var triangleIndex in renderedObject.Mesh.Triangles)
                 {
+                    // 三角面剔除
+                    int i = 0;
+                    for (; i < 3; i++)
+                    {
+                        var index = triangleIndex.Vertexs[i];
+
+                        if (!(screenVertexs[index].W > 0 || screenVertexs[index].X < 0 || screenVertexs[index].X >= Screen.Width || screenVertexs[index].Y < 0 || screenVertexs[index].Y >= Screen.Height))
+                            break;
+                    }
+
+                    if (i == 3)
+                        continue;
+
+                    // 三角面光栅化
                     Screen.Rasterize(
                         triangleIndex.Triangle(screenVertexs, worldVertexs, normals, renderedObject.Mesh.TextureCoords),
                         renderedObject.Shader,

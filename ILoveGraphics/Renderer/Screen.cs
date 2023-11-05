@@ -2,6 +2,7 @@
 using ILoveGraphics.Renderer.ScreenDrawer;
 using ILoveGraphics.Shader;
 using MatrixCore;
+using System.ComponentModel;
 
 namespace ILoveGraphics.Renderer
 {
@@ -60,6 +61,7 @@ namespace ILoveGraphics.Renderer
         {
             return (barycentric.X * v[0] + barycentric.Y * v[1] + barycentric.Z * v[2]) / weight;
         }
+        
 
         private readonly Vector4[,] _frameBuffer;
         private readonly float[,] _zBuffer;

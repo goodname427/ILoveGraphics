@@ -76,7 +76,7 @@
             TBox_Message.Multiline = true;
             TBox_Message.Name = "TBox_Message";
             TBox_Message.ReadOnly = true;
-            TBox_Message.Size = new Size(177, 52);
+            TBox_Message.Size = new Size(177, 70);
             TBox_Message.TabIndex = 3;
             TBox_Message.Visible = false;
             // 
@@ -92,6 +92,9 @@
             Name = "FormScreenDrawer";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "DrawForm";
+            KeyPress += FormScreenDrawer_KeyPress;
+            MouseClick += FormScreenDrawer_MouseClick;
+            MouseMove += FormScreenDrawer_MouseMove;
             ResumeLayout(false);
             PerformLayout();
         }

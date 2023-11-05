@@ -3,12 +3,8 @@ using MatrixCore;
 
 namespace ILoveGraphics.Light
 {
-    public abstract class BaseLight
+    public abstract class BaseLight : Object.Object
     {
-        /// <summary>
-        /// 光照信息
-        /// </summary>
-        public Transform Transform { get; init; }
         /// <summary>
         /// 光照颜色
         /// </summary>

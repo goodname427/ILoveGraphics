@@ -6,7 +6,7 @@ using MatrixCore;
 
 namespace ILoveGraphics.Test
 {
-    public class RenderedScene
+    public static class RenderedScene
     {
         #region 场景必要组件
         /// <summary>
@@ -28,10 +28,11 @@ namespace ILoveGraphics.Test
         #endregion
 
         #region 场景参数
+        public static string Message { get; set; } = "";
         /// <summary>
         /// 场景中的运行信息
         /// </summary>
-        public static (int frameCount, DateTime startTime, DateTime lastTime) RunInfo;
+        public static RunInfo CurrentRunInfo { get; private set; } = new RunInfo();
         /// <summary>
         /// 循环数
         /// </summary>
@@ -77,7 +78,7 @@ namespace ILoveGraphics.Test
             // 相机
             Camera = new Camera(screen)
             {
-                FieldOfView = 45,
+                FieldOfView = 90,
                 Transform = new()
                 {
                     Position = new(0, 0, -10f),
@@ -85,7 +86,9 @@ namespace ILoveGraphics.Test
             };
 
             // 运行信息
-            RunInfo = (0, DateTime.Now, DateTime.Now);
+            CurrentRunInfo.FrameCount = 0;
+            CurrentRunInfo.StartTime = DateTime.Now;
+            CurrentRunInfo.LastTime = DateTime.Now;
 
             // 变化参数
             Cycle = (0f, 1, 0f, 2 * MathF.PI);
@@ -95,31 +98,33 @@ namespace ILoveGraphics.Test
         /// <summary>
         /// 更新场景
         /// </summary>
-        /// <param name="update"></param>
-        public static void Update(params Action<RenderedObject>[] update)
+        /// <param name="objectUpdate"></param>
+        public static void Update(Action? sceneUpdate = null, params Action<RenderedObject>[] objectUpdate)
         {
             // 统计运行信息
             var now = DateTime.Now;
-            var deltaTime = (float)(now - RunInfo.lastTime).TotalSeconds;
-            RunInfo.lastTime = now;
+            CurrentRunInfo.DeltaTime = (float)(now - CurrentRunInfo.LastTime).TotalSeconds;
+            CurrentRunInfo.LastTime = now;
 
-            RunInfo.frameCount++;
+            CurrentRunInfo.FrameCount++;
 
             // 变化参数
             MathTool.PingPong(PingPong.min, PingPong.max, ref PingPong.step, ref PingPong.value);
-            MathTool.Cycle(Cycle.min, Cycle.max, Cycle.step * deltaTime, ref Cycle.value);
+            MathTool.Cycle(Cycle.min, Cycle.max, Cycle.step * CurrentRunInfo.DeltaTime, ref Cycle.value);
 
+            sceneUpdate?.Invoke();
             foreach (var renderedObject in RenderedObjects)
             {
-                foreach (var action in update)
+                foreach (var action in objectUpdate)
                     action?.Invoke(renderedObject);
             }
 
             // 渲染
             Camera?.Render(RenderedObjects, $"""
                 resolution: ({Camera.Screen.Width}, {Camera.Screen.Height}, {Camera.Screen.Width * Camera.Screen.Width})
-                fps: {RunInfo.frameCount / (now - RunInfo.startTime).TotalSeconds:F2}
-                deltaTime: {deltaTime:F2}
+                fps: {CurrentRunInfo.FPS:F2}
+                deltaTime: {CurrentRunInfo.DeltaTime * 1000:F2} ms
+                message: {Message}
                 """);
         }
 
@@ -141,5 +146,29 @@ namespace ILoveGraphics.Test
             renderedObject.Transform.EulerAngle = new Vector4(Cycle.value, Cycle.value, Cycle.value);
         }
         #endregion
+    
+        public class RunInfo
+        {
+            /// <summary>
+            /// 总帧数
+            /// </summary>
+            public int FrameCount { get; set; }
+            /// <summary>
+            /// 上一次运行时间
+            /// </summary>
+            public DateTime LastTime { get; set;}
+            /// <summary>
+            /// 开始时间
+            /// </summary>
+            public DateTime StartTime { get; set;}
+            /// <summary>
+            /// 上一帧到这一帧的时间差
+            /// </summary>
+            public float DeltaTime { get; set; }
+            /// <summary>
+            /// 每秒帧数
+            /// </summary>
+            public float FPS => (float)(FrameCount / (LastTime - StartTime).TotalSeconds);
+        }
     }
 }

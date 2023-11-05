@@ -53,7 +53,7 @@ namespace ILoveGraphics.Object
                 triangleTextureCoords = new Vector4[]
                 {
                     Vector4.Zero,
-                    Vector4.One,
+                    Vector4.Zero,
                     Vector4.Zero,
                 };
             }

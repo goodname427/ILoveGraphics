@@ -3,7 +3,7 @@ using MatrixCore;
 
 namespace ILoveGraphics.Object
 {
-    public class RenderedObject
+    public class RenderedObject : Object
     {
         #region 预制体
         /// <summary>
@@ -13,8 +13,8 @@ namespace ILoveGraphics.Object
         {
             Transform = new()
             {
-                Position = new(1, 0, 0),
-                Scale = new(1, 1, 1)
+                Position = new(5, 0, 0),
+                Scale = Vector4.One * 4
             }
         };
         /// <summary>
@@ -24,8 +24,8 @@ namespace ILoveGraphics.Object
         {
             Transform = new()
             {
-                Position = new(-1, 0, 0),
-                Scale = Vector4.One * 0.5f
+                Position = new(-5, 0, 0),
+                Scale = Vector4.One * 2
             },
         };
         /// <summary>
@@ -33,9 +33,14 @@ namespace ILoveGraphics.Object
         /// </summary>
         public static RenderedObject Heart => new(Mesh.Load("Heart.obj"))
         {
-            Shader = new Shader.StandardShader
+            Transform = new()
             {
-                BaseColor = new Vector4(1)
+                Scale = Vector4.One * 2,
+            },
+            Shader = new StandardShader
+            {
+                BaseColor = new Vector4(1),
+                // Roughness = 8,
             }
         };
         /// <summary>
@@ -59,10 +64,6 @@ namespace ILoveGraphics.Object
         #endregion
 
         /// <summary>
-        /// 物体的变换信息
-        /// </summary>
-        public Transform Transform { get; init; } = new Transform();
-        /// <summary>
         /// 物体模型
         /// </summary>
         public Mesh Mesh { get; set; }
@@ -77,7 +78,6 @@ namespace ILoveGraphics.Object
         }
         public RenderedObject(Mesh mesh, IShader shader)
         {
-            Transform = new Transform();
             Mesh = mesh;
             Shader = shader;
         }

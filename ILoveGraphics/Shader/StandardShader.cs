@@ -10,6 +10,7 @@ namespace ILoveGraphics.Shader
         public Vector4 BaseColor { get; set; } = Vector4.One;
         public Vector4 SpecularColor { get; set; } = Vector4.One;
         public Texture? Texture { get; set; }
+        public float Roughness { get; set; } = 128;
 
         public Vector4 GetColor(IShader.ShaderArgs args)
         {
@@ -28,7 +29,7 @@ namespace ILoveGraphics.Shader
 
                 // 高光
                 var h = ((eyeDir + lightDir) / 2).Normalized;
-                color += SpecularColor * intensity * MathF.Pow(MathF.Max(0, args.Normal * h), 128);
+                color += SpecularColor * intensity * MathF.Pow(MathF.Max(0, args.Normal * h), Roughness);
 
                 // 环境光
                 color += RenderedScene.Ambient;

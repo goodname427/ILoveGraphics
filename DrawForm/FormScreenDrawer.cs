@@ -18,7 +18,7 @@ namespace DrawForm
         {
             Transform = new()
             {
-                Scale = Vector4.One * 2
+                Scale = Vector4.One * 4
             },
             Shader = new StandardShader
             {
@@ -53,8 +53,6 @@ namespace DrawForm
         public FormScreenDrawer()
         {
             InitializeComponent();
-
-
         }
 
         private void Init()
@@ -112,7 +110,7 @@ namespace DrawForm
 
             RenderedScene.RenderedObjects.AddRange(new RenderedObject[]
             {
-                Spot
+                RenderedObject.Heart
             });
             RenderedScene.SetDefaultRenderArgs(screen);
 
@@ -131,7 +129,29 @@ namespace DrawForm
 
         private void Tmr_Update_Tick(object sender, EventArgs e)
         {
-            RenderedScene.Update(RenderedScene.RotateAroundY);
+            RenderedScene.Update(
+                //null,
+                //() => ObjectController.DoMove(RenderedScene.Camera)
+                //() => RenderedScene.Camera.Transform.EulerAngle = new Vector4(RenderedScene.Cycle.value, RenderedScene.Cycle.value, RenderedScene.Cycle.value)
+            //RenderedScene.RotateAroundY
+            );
+        }
+
+        private void FormScreenDrawer_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //ObjectController.KeyInput(sender, e);
+        }
+
+        private void FormScreenDrawer_MouseMove(object sender, MouseEventArgs e)
+        {
+            ObjectController.MouseInput(sender, e);
+        }
+
+        private void FormScreenDrawer_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (RenderedScene.Camera is null)
+                return;
+            RenderedScene.Camera.Transform.Position = -RenderedScene.Camera.Transform.Position;
         }
     }
 }
