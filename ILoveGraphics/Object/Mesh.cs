@@ -8,7 +8,7 @@ namespace ILoveGraphics.Object
         /// <summary>
         /// 模型路径
         /// </summary>
-        public static string Path { get; } = "E:\\CGL\\Programs\\CSharp\\ILoveGraphics\\ILoveGraphics\\Models\\";
+        public static string Path { get; } = "C:\\Users\\galenglchen\\Source\\Repos\\ILoveGraphics\\ILoveGraphics\\Models\\";
 
         #region 预制体
         /// <summary>
@@ -52,7 +52,17 @@ namespace ILoveGraphics.Object
                         textureCoords.Add(new Vector4(float.Parse(args[0]), float.Parse(args[1])));
                         break;
                     case "f":
-                        var indexes = args.Select(arg => arg.Split("/").Select(i => int.Parse(i) - 1).ToArray()).ToArray();
+                        var indexes = args.Select(
+                                arg => arg.Split("/")
+                                    .Where(i => !string.IsNullOrEmpty(i))
+                                    .Select(i => int.Parse(i) - 1)
+                                    .ToArray()
+                            ).Where(index => index.Length >= 3)
+                            .ToArray();
+
+                        if (indexes.Length < 3)
+                            break;
+
                         triangles.Add(new TriangleIndex
                         {
                             Vertexs = new int[]
