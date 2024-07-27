@@ -92,7 +92,7 @@ namespace ILoveGraphics.Renderer.ScreenDrawer
         public static PixelColor Parse(Vector4 color)
         {
             var gray = (color.X * 0.299f + color.Y * 0.587f + color.Z * 0.114f) * MaxGray;
-            var consoleColor = ConsoleColor.White; //GetApproximateConsoleColor(color);
+            var consoleColor = GetApproximateConsoleColor(color);
             return new PixelColor(gray, consoleColor);
         }
 

@@ -7,6 +7,7 @@ RenderedScene.RenderedObjects.AddRange(new RenderedObject[]
     //RenderedObject.Cube1,
     //RenderedObject.Cube2,
     RenderedObject.Spot
+    //RenderedObject.Heart
 });
 RenderedScene.SetConsoleRenderArgs();
 while (true)
