@@ -8,7 +8,7 @@ namespace ILoveGraphics.Object
         /// <summary>
         /// 模型路径
         /// </summary>
-        public static string Path { get; } = "C:\\Users\\galenglchen\\Source\\Repos\\ILoveGraphics\\ILoveGraphics\\Models\\";
+        public static string Path { get; } = "..\\..\\..\\Models\\";
 
         #region 预制体
         /// <summary>
