@@ -1,5 +1,4 @@
 ﻿using ILoveGraphics.Object;
-using ILoveGraphics.Renderer.ScreenDrawer;
 using ILoveGraphics.Shader;
 using MatrixCore;
 
@@ -91,17 +90,21 @@ namespace ILoveGraphics.Renderer
         /// </summary>
         public List<IScreenDrawer> ScreenDrawers { get; } = new List<IScreenDrawer>();
 
-        public Screen() : this(new ConsoleScreenDrawer(), Console.WindowWidth / 2, Console.WindowHeight)
+        public Screen() : this(null, Console.WindowWidth / 2, Console.WindowHeight)
         {
 
         }
-        public Screen(IScreenDrawer screenDrawer) : this(screenDrawer, Console.WindowWidth / 2, Console.WindowHeight)
+        public Screen(IScreenDrawer? screenDrawer) : this(screenDrawer, Console.WindowWidth / 2, Console.WindowHeight)
         {
 
         }
-        public Screen(IScreenDrawer screenDrawer, int width, int height)
+        public Screen(IScreenDrawer? screenDrawer, int width, int height)
         {
-            ScreenDrawers.Add(screenDrawer);
+            if (screenDrawer != null)
+            {
+                ScreenDrawers.Add(screenDrawer);
+            }
+
             Width = width;
             Height = height;
 

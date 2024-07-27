@@ -1,7 +1,6 @@
 ﻿using ILoveGraphics.Light;
 using ILoveGraphics.Object;
 using ILoveGraphics.Renderer;
-using ILoveGraphics.Renderer.ScreenDrawer;
 using MatrixCore;
 
 namespace ILoveGraphics.Test
@@ -43,24 +42,6 @@ namespace ILoveGraphics.Test
         public static (float value, float step, float min, float max) PingPong;
         #endregion
 
-
-        /// <summary>
-        /// 设置窗口数据
-        /// </summary>
-        public static void SetConsoleRenderArgs()
-        {
-            // 方便调整屏幕大小
-            Console.WriteLine("Press Enter To Start!");
-            Console.ReadLine();
-            Console.Clear();
-
-            // 屏幕
-            var screen = new Screen(
-                new ConsoleScreenDrawer(), Console.WindowWidth / 2, Console.WindowHeight
-            );
-
-            SetDefaultRenderArgs(screen);
-        }
         /// <summary>
         /// 设置默认数据
         /// </summary>

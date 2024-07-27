@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ILoveGraphics.Renderer.ScreenDrawer
+namespace ILoveGraphics.Renderer
 {
     public interface IScreenDrawer
     {

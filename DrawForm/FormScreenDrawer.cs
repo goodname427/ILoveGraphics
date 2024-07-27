@@ -2,7 +2,7 @@
 
 using ILoveGraphics.Light;
 using ILoveGraphics.Object;
-using ILoveGraphics.Renderer.ScreenDrawer;
+using ILoveGraphics.Renderer;
 using ILoveGraphics.Shader;
 using ILoveGraphics.Test;
 using MatrixCore;
@@ -23,7 +23,7 @@ namespace DrawForm
             },
             Shader = new StandardShader
             {
-                SpecularColor = Vector4.One * 0.85f,
+                SpecularColor = new Vector4(1, 1, 1, 1) * 0.85f,
                 Texture = ColorHelper.GetTexture(Mesh.Path + "Spot\\spot_texture.png")
             }
         };
@@ -39,7 +39,7 @@ namespace DrawForm
             },
             Shader = new StandardShader
             {
-                SpecularColor = Vector4.One * 0.85f,
+                SpecularColor = new Vector4(1, 1, 1, 1) * 0.85f,
                 Texture = ColorHelper.GetTexture(Mesh.Path + "Prince\\beast_Base_Color.png")
             }
         };

@@ -1,9 +1,18 @@
 ﻿using ILoveGraphics.Object;
+using ILoveGraphics.Renderer.ScreenDrawer;
+using ILoveGraphics.Renderer;
 using ILoveGraphics.Test;
-using MatrixCore;
-using static System.Formats.Asn1.AsnWriter;
 
-//Mesh.Load(@"E:\CGL\Programs\CSharp\ILoveGraphics\ILoveGraphics\models\untitled.obj");
+// 方便调整屏幕大小
+Console.WriteLine("Press Enter To Start!");
+Console.ReadLine();
+Console.Clear();
+
+// 屏幕
+var screen = new Screen(
+    new ConsoleScreenDrawer(), Console.WindowWidth / 2, Console.WindowHeight
+);
+
 RenderedScene.RenderedObjects.AddRange(new RenderedObject[]
 {
     //RenderedObject.Cube1,
@@ -18,12 +27,12 @@ RenderedScene.RenderedObjects.AddRange(new RenderedObject[]
     //    }
     //}
 });
-RenderedScene.SetConsoleRenderArgs();
+
+RenderedScene.SetDefaultRenderArgs(screen);
+
 while (true)
 {
     RenderedScene.Update(null
         , RenderedScene.RotateAroundY
-        );
+    );
 }
-
-//Mesh.Load(Test.Path + "Prince\\Scene.obj");
