@@ -50,9 +50,9 @@ namespace ILoveGraphics.Object
             }
         }
 
-        public Vector4 Up => TransformMatrix * Vector4.Up;
+        public Vector4 Up => Matrix.RotationMatrix(EulerAngle) * Vector4.Up;
         public Vector4 Forward => Matrix.RotationMatrix(EulerAngle) * Vector4.Forward;
-        public Vector4 Left => TransformMatrix * Vector4.Left;
+        public Vector4 Left => Matrix.RotationMatrix(EulerAngle) * Vector4.Left;
 
         /// <summary>
         /// 模型矩阵

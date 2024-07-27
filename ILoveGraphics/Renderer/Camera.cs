@@ -16,11 +16,11 @@ namespace ILoveGraphics.Renderer
         /// <summary>
         /// 近平面
         /// </summary>
-        public float Near { get; set; } = -1;
+        public float Near { get; set; } = 1;
         /// <summary>
         /// 远平面
         /// </summary>
-        public float Far { get; set; } = -3000;
+        public float Far { get; set; } = 3000;
 
         /// <summary>
         /// 渲染屏幕
@@ -36,14 +36,16 @@ namespace ILoveGraphics.Renderer
             {
                 var gaze = Transform.Forward;
                 var top = Transform.Up;
-                var gXt = Vector4.Cross(gaze, top);
-                return new Matrix(new float[,]
+                var left = Transform.Left;
+                Matrix matrix;
+                matrix = new Matrix(new float[,]
                 {
-                    {gXt.X, gXt.Y, gXt.Z, 0},
+                    {left.X, left.Y, left.Z, 0},
                     {top.X, top.Y, top.Z, 0},
-                    {-gaze.X, -gaze.Y, -gaze.Z, 0},
+                    {gaze.X, gaze.Y, gaze.Z, 0},
                     {0, 0, 0, 1}
                 }) * Matrix.TranslationMatrix(-Transform.Position);
+                return matrix;
             }
         }
         /// <summary>
@@ -53,7 +55,7 @@ namespace ILoveGraphics.Renderer
         {
             get
             {
-                return new float[,]
+                return OrthogonalizedProjectionMatrix * new float[,]
                 {
                     {Near, 0, 0, 0},
                     {0, Near, 0, 0},
@@ -72,28 +74,35 @@ namespace ILoveGraphics.Renderer
                 float top = MathF.Abs(Near) * MathF.Tan(MathF.PI * FieldOfView / 360);
                 float left = top * AspectRatio;
 
-                Matrix translate = new float[,]
-                {
-                    { 1, 0, 0, 0},
-                    { 0, 1, 0, 0},
-                    { 0, 0, 1, - ((Near + Far) / 2)},
-                    { 0, 0, 0, 1}
-                };
-                Matrix scale = new float[,]
+                //Matrix translate = new float[,]
+                //{
+                //    { 1, 0, 0, 0},
+                //    { 0, 1, 0, 0},
+                //    { 0, 0, 1, - ((Near + Far) / 2)},
+                //    { 0, 0, 0, 1}
+                //};
+                //Matrix scale = new float[,]
+                //{
+                //    { 1 / left, 0, 0, 0},
+                //    { 0, 1 / top, 0, 0},
+                //    { 0, 0, 2 / (Near - Far), 0},
+                //    { 0, 0, 0, 1}
+                //};
+
+                //return scale * translate;
+                return new float[,]
                 {
                     { 1 / left, 0, 0, 0},
                     { 0, 1 / top, 0, 0},
-                    { 0, 0, 2 / (Near - Far), 0},
+                    { 0, 0, 1 / (Far - Near), -Near / (Far - Near)},
                     { 0, 0, 0, 1}
                 };
-
-                return scale * translate;
             }
         }
         /// <summary>
         /// 视角变换
         /// </summary>
-        public Matrix ViewingMatrix => OrthogonalizedProjectionMatrix * PerspectProjectionMatrix * ViewMatrix;
+        public Matrix ViewingMatrix =>  PerspectProjectionMatrix * ViewMatrix;
 
         public Camera(Screen screen)
         {
@@ -124,20 +133,22 @@ namespace ILoveGraphics.Renderer
 
                 // 视图+投影+视口变换, W存储z轴的正负信息
                 var screenVertexs = (from vertex in worldVertexs
-                                     let transVertex = vvMatrix *  vertex
+                                     let transVertex = vvMatrix * vertex
                                      let w = transVertex.W
-                                     select transVertex with { W = MathF.Abs(w) } / w).ToArray();
+                                     select transVertex with { W = MathF.Abs(w) } / w
+                                     ).ToArray();
 
                 // 光栅化
                 foreach (var triangleIndex in renderedObject.Mesh.Triangles)
                 {
-                    // 三角面剔除
+                    // 齐次空间裁切
+                    // 本来应该在顶点变换阶段就裁切的，但是由于合并了视口变换和视图变换，所以将裁切转移到这里
                     int i = 0;
                     for (; i < 3; i++)
                     {
                         var v = screenVertexs[triangleIndex.Vertexs[i]];
 
-                        if (!(v.W > 0 || v.X < 0 || v.X >= Screen.Width || v.Y < 0 || v.Y >= Screen.Height))
+                        if (!(v.W < 0 || v.X < 0 || v.X >= Screen.Width || v.Y < 0 || v.Y >= Screen.Height))
                             break;
                     }
 

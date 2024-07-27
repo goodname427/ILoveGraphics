@@ -8,7 +8,7 @@ namespace ILoveGraphics.Object
         /// <summary>
         /// 模型路径
         /// </summary>
-        public static string Path { get; } = "..\\..\\..\\Models\\";
+        public static string Path { get; } = "..\\..\\..\\..\\ILoveGraphics\\Models\\";
 
         #region 预制体
         /// <summary>
@@ -211,12 +211,11 @@ namespace ILoveGraphics.Object
                  },
                  new TriangleIndex[]
                  {
-                    //0, 1, 4,
-                    //1, 2, 3,
-                    //1, 3, 4,
-                    //0, 4, 7,
-                    //5, 6, 7,
-                    //4, 5, 7,
+                    new(){Vertexs = new int[]{ 0, 1, 4 } },
+                    new(){Vertexs = new int[]{ 1, 2, 3 } },
+                    new(){Vertexs = new int[]{ 1, 3, 4 } },
+                    new(){Vertexs = new int[]{ 5, 6, 7 } },
+                    new(){Vertexs = new int[]{ 4, 5, 7 } }
                  }
              );
         }

@@ -71,7 +71,8 @@ namespace ILoveGraphics.Test
             Lights.AddRange(new BaseLight[]{
                 new DirectionalLight
                 {
-                    Direction = new Vector4(0, 1, -1),
+                    Direction = new Vector4(1, -1, 1, 0),
+                    Intensity = 1
                 }
             });
 
@@ -144,6 +145,22 @@ namespace ILoveGraphics.Test
         public static void RotateAroundY(RenderedObject renderedObject)
         {
             renderedObject.Transform.EulerAngle = new Vector4(0, Cycle.value, 0);
+        }
+        /// <summary>
+        /// 绕y轴旋转
+        /// </summary>
+        /// <param name="renderedObject"></param>
+        public static void RotateAroundX(RenderedObject renderedObject)
+        {
+            renderedObject.Transform.EulerAngle = new Vector4(Cycle.value, 0, 0);
+        }
+        /// <summary>
+        /// 绕y轴旋转
+        /// </summary>
+        /// <param name="renderedObject"></param>
+        public static void RotateAroundZ(RenderedObject renderedObject)
+        {
+            renderedObject.Transform.EulerAngle = new Vector4(0, 0, Cycle.value);
         }
         /// <summary>
         /// 旋转

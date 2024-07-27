@@ -57,7 +57,7 @@ public struct Vector4
     #endregion
 
     #region 常用向量
-    public static Vector4 One { get; } = new(1, 1, 1, 1);
+    public static Vector4 One { get; } = new(1, 1, 1, 0);
     public static Vector4 Zero { get; } = new();
     public static Vector4 Up { get; } = new(0, 1, 0, 0);
     public static Vector4 Left { get; } = new(1, 0, 0, 0);

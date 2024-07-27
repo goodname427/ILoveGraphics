@@ -11,7 +11,7 @@ namespace DrawForm
         public static Vector4 _direction;
         public static Vector4 _mouseDirection;
         public static float _moveSpeed = 0.4f;
-        public static float _rotateSpeed = 0.001f;
+        public static float _rotateSpeed = 0.01f;
 
         public static void Reset()
         {

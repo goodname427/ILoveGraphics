@@ -209,8 +209,8 @@ public struct Matrix
         return new float[,] 
         {
             { 1,      0,       0, 0 },
-            { 0, Cos(a), -Sin(a), 0 },
-            { 0, Sin(a),  Cos(a), 0 },
+            { 0, Cos(a), Sin(a), 0 },
+            { 0, -Sin(a),  Cos(a), 0 },
             { 0,      0,       0, 1 }
         };
     }
@@ -223,9 +223,9 @@ public struct Matrix
     {
         return new float[,] 
         {
-            { Cos(a), 0, Sin(a), 0 },
+            { Cos(a), 0, -Sin(a), 0 },
             {      0, 1,      0, 0 },
-            {-Sin(a), 0, Cos(a), 0 },
+            {Sin(a), 0, Cos(a), 0 },
             {      0, 0,      0, 1 }
         };
     }
@@ -238,8 +238,8 @@ public struct Matrix
     {
         return new float[,] 
         {
-            { Cos(a), -Sin(a), 0, 0 },
-            { Sin(a),  Cos(a), 0, 0 },
+            { Cos(a), Sin(a), 0, 0 },
+            { -Sin(a),  Cos(a), 0, 0 },
             {      0,       0, 1, 0 },
             {      0,       0, 0, 1 }
         };

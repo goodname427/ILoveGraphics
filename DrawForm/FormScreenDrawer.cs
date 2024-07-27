@@ -49,7 +49,7 @@ namespace DrawForm
         private Graphics? _graphics;
         private Bitmap? _image;
         private Graphics? _imageGraphics;
-        private int _scale = 2;
+        private float _scale = 2;
 
         public FormScreenDrawer()
         {
@@ -58,8 +58,8 @@ namespace DrawForm
 
         private void Init()
         {
-            _ = int.TryParse(TBox_Scale.Text, out _scale);
-            _frameBuff = new Vector4[Width / _scale, Height / _scale];
+            _ = float.TryParse(TBox_Scale.Text, out _scale);
+            _frameBuff = new Vector4[(int)(Width / _scale), (int)(Height / _scale)];
             _imageGraphics = Graphics.FromImage(_image = new Bitmap(Width, Height));
             _imageGraphics.Clear(Color.Black);
             _graphics = CreateGraphics();
@@ -107,7 +107,7 @@ namespace DrawForm
 #else
                 this;
 #endif
-            var screen = new ILoveGraphics.Renderer.Screen(screenDrawer, Width / _scale, Height / _scale);
+            var screen = new ILoveGraphics.Renderer.Screen(screenDrawer, (int)(Width / _scale), (int)(Height / _scale));
 
             RenderedScene.RenderedObjects.AddRange(new RenderedObject[]
             {
@@ -137,6 +137,8 @@ namespace DrawForm
                 //RenderedScene.RotateLight
 
                 ,RenderedScene.RotateAroundY
+                //,RenderedScene.RotateAroundX
+                //,RenderedScene.RotateAroundZ
             );
             //ObjectController.Reset();
         }

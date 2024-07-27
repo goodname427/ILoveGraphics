@@ -7,8 +7,8 @@ namespace ILoveGraphics.Shader
 {
     public class StandardShader : IShader
     {
-        public Vector4 BaseColor { get; set; } = Vector4.One;
-        public Vector4 SpecularColor { get; set; } = Vector4.One;
+        public Vector4 BaseColor { get; set; } = new Vector4(1, 1, 1, 1);
+        public Vector4 SpecularColor { get; set; } = new Vector4(1, 1, 1, 1);
         public Texture? Texture { get; set; }
         public float Roughness { get; set; } = 128;
 
@@ -19,8 +19,9 @@ namespace ILoveGraphics.Shader
             var color = Vector4.Zero;
             foreach (var light in RenderedScene.Lights)
             {
-                // 光照方向
-                var lightDir = light.GetLightDirection(args.ShaderPosition);
+                // 光照方向, 从该点指向光源
+                var lightDir = -light.GetLightDirection(args.ShaderPosition);
+
                 // 光强
                 var intensity = light.GetIntensity(args.ShaderPosition);
 

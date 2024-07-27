@@ -2,7 +2,6 @@
 using ILoveGraphics.Renderer.ScreenDrawer;
 using ILoveGraphics.Shader;
 using MatrixCore;
-using System.ComponentModel;
 
 namespace ILoveGraphics.Renderer
 {
@@ -61,7 +60,7 @@ namespace ILoveGraphics.Renderer
         {
             return (barycentric.X * v[0] + barycentric.Y * v[1] + barycentric.Z * v[2]) / weight;
         }
-        
+
 
         private readonly Vector4[,] _frameBuffer;
         private readonly float[,] _zBuffer;
@@ -157,7 +156,7 @@ namespace ILoveGraphics.Renderer
                     var z = barycentric.X * v[0].Z + barycentric.Y * v[1].Z + barycentric.Z * v[2].Z;
 
                     // 采样
-                    if (z < _zBuffer[x, y])
+                    if (z > _zBuffer[x, y])
                         continue;
                     _zBuffer[x, y] = z;
 
@@ -183,7 +182,7 @@ namespace ILoveGraphics.Renderer
                 for (int y = 0; y < Height; y++)
                 {
                     _frameBuffer[x, y] = Vector4.Zero;
-                    _zBuffer[x, y] = float.MinValue;
+                    _zBuffer[x, y] = float.MaxValue;
                 }
             }
 
