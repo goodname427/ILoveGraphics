@@ -54,7 +54,7 @@ namespace ILoveGraphics.Object
         {
             Transform = new()
             {
-                Scale = Vector4.One * 2
+                Scale = Vector4.One * 5
             },
             Shader = new StandardShader
             {

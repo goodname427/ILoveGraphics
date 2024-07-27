@@ -22,13 +22,20 @@ namespace ILoveGraphics.Renderer.ScreenDrawer
             // 将颜色相同（或者透明）的字符一次性输出
             for (int y = height - 1; y >= 0; y--)
             {
-                for (int x = 0; x < width; x++)
+                for (int x = 0; x < width * 2; x++)
                 {
-                    var pixelColor = PixelColor.Parse(frameBuffer[x, y]);
+                    PixelColor pixelColor;
+                    if (x % 2 == 0 || (x / 2 + 1 >= width))
+                    {
+                        pixelColor = PixelColor.Parse(frameBuffer[x / 2, y]);
+                    }
+                    else
+                    {
+                        pixelColor = PixelColor.Parse((frameBuffer[x / 2, y] + frameBuffer[x / 2 + 1, y]) / 2);
+                    }
                     if (pixelColor.Gray == 0 || pixelColor.ConsoleColor == color)
                     {
                         output.Append(pixelColor.ConsoleChar);
-                        output.Append(' ');
                     }
                     else
                     {
