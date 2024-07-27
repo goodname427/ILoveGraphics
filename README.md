@@ -15,7 +15,7 @@ while (true)
 ```
 
 # 演示视频
-[cow.mp4](cow.mp4)
+[cow.mp4](Cow.mp4)
 
 # 项目说明
 1.项目完全使用C#编写  
