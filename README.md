@@ -5,7 +5,7 @@
 ## 演示视频
 
 [Cow.mp4](Cow.mp4)
-<!--<iframe height=498 width=510 src="Cow.mp4">-->
+<iframe height=498 width=510 src="Cow.mp4">
 
 ## 项目依赖
 
@@ -14,9 +14,9 @@
 
 ## 项目功能    
 
-1.Obj文件以及Texture导入  
-2.支持自定义Pixel Shader
-3.基本的渲染管线，顶点变换->光栅化->着色->输出屏幕  
+1.Obj文件以及Texture导入。  
+2.支持自定义Pixel Shader。  
+3.基本的渲染管线，顶点变换->光栅化->着色->输出屏幕。  
 
 # 使用说明
 
