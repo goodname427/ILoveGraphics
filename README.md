@@ -5,7 +5,6 @@
 ## 演示视频
 
 [Cow.mp4](Cow.mp4)
-<iframe height=498 width=510 src="Cow.mp4">
 
 ## 项目依赖
 
