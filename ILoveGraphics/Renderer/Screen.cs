@@ -163,7 +163,7 @@ namespace ILoveGraphics.Renderer
                         continue;
                     _zBuffer[x, y] = z;
 
-
+                    // PS
                     _frameBuffer[x, y] = shader.GetColor(new()
                     {
                         ShaderPosition = Interpolate(barycentric, triangle.WorldPosition, 1),

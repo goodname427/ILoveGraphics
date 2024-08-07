@@ -121,6 +121,9 @@ namespace ILoveGraphics.Renderer
             var vvMatrix = Screen.ViewportMatrix * ViewingMatrix;
             foreach (var renderedObject in renderedObjects)
             {
+                //
+                // VS
+                //
                 var transformMatrix = renderedObject.Transform.TransformMatrix;
 
                 // m矩阵变换
@@ -156,6 +159,7 @@ namespace ILoveGraphics.Renderer
                         continue;
 
                     // 三角面光栅化
+                    // PS
                     Screen.Rasterize(
                         triangleIndex.Triangle(screenVertexs, worldVertexs, normals, renderedObject.Mesh.TextureCoords),
                         renderedObject.Shader,
