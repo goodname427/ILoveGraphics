@@ -4,7 +4,8 @@
 
 ## 演示视频
 
-[Cow.mp4](Cow.mp4)
+[Cow](Cow.mp4)
+[Cow(cmd)](Cow_cmd.mp4)
 
 ## 项目依赖
 
