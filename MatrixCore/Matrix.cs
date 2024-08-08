@@ -253,7 +253,7 @@ public struct Matrix
     /// <returns></returns>
     public static Matrix RotationMatrix(float x, float y, float z)
     {
-        return RotationMatrixByX(x) * RotationMatrixByY(y) * RotationMatrixByZ(z);
+        return RotationMatrixByY(y) * RotationMatrixByX(x) * RotationMatrixByZ(z);
     }
     /// <summary>
     /// 旋转矩阵
