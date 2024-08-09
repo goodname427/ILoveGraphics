@@ -125,6 +125,7 @@ namespace ILoveGraphics.Renderer
                 // VS
                 //
                 var transformMatrix = renderedObject.Transform.TransformMatrix;
+                var transformInverseTransposeMatrix = transformMatrix.InverseMatrix.TransposedMatrix;
 
                 // m矩阵变换
                 var worldVertexs = (from vertex in renderedObject.Mesh.Vertexes
@@ -132,7 +133,7 @@ namespace ILoveGraphics.Renderer
 
                 // 法线
                 var normals = (from vertex in renderedObject.Mesh.Normals
-                               select transformMatrix * vertex).ToArray();
+                               select transformInverseTransposeMatrix * vertex).ToArray();
 
                 // 视图+投影+视口变换, W存储z轴的正负信息
                 var screenVertexs = (from vertex in worldVertexs

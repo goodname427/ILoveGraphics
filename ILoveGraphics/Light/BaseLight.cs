@@ -18,7 +18,7 @@ namespace ILoveGraphics.Light
         {
             Color = Vector4.One;
             Transform = new Transform();
-            Intensity = 1;
+            Intensity = 3;
         }
 
         /// <summary>

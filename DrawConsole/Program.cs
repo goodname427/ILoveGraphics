@@ -10,7 +10,7 @@ Console.Clear();
 
 // 屏幕
 var screen = new Screen(
-    new ConsoleScreenDrawer(), Console.WindowWidth / 2, Console.WindowHeight
+   new ConsoleScreenDrawer(), Console.WindowWidth / 2, Console.WindowHeight
 );
 
 RenderedScene.RenderedObjects.AddRange(new RenderedObject[]

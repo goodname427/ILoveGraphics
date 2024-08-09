@@ -492,7 +492,7 @@ public struct Matrix
         {
             for (int j = 1; j <= N; j++)
             {
-                sb.Append(this[i, j]);
+                sb.Append($"{this[i, j]:f2}");
                 sb.Append(' ');
             }
             sb.Append('\n');

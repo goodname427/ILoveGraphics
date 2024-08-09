@@ -23,7 +23,7 @@ namespace ILoveGraphics.Test
         /// <summary>
         /// 场景中的环境光参数
         /// </summary>
-        public static Vector4 Ambient { get; set; } = Vector4.One * 0.1f;
+        public static Vector4 Ambient { get; set; } = Vector4.One * 0.2f;
         #endregion
 
         #region 场景参数
@@ -53,7 +53,7 @@ namespace ILoveGraphics.Test
                 new DirectionalLight
                 {
                     Direction = new Vector4(1, -1, 1, 0),
-                    Intensity = 1
+                    Intensity = 3
                 }
             });
 
