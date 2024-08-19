@@ -130,6 +130,13 @@ namespace ILoveGraphics.Renderer
         {
             var v = triangle.Vertexs;
 
+            // 背面剔除
+            // 三角形顶点顺寻为逆时针时剔除
+            if (Vector4.Cross(v[1] - v[0], v[2] - v[0]).Z > 0)
+            {
+                return;
+            }
+
             // 获取bounding box
             var left = MathF.Max(MathTool.Min(v[0].X, v[1].X, v[2].X), 0);
             var right = MathF.Min(MathTool.Max(v[0].X, v[1].X, v[2].X), Width - 1);
@@ -138,7 +145,7 @@ namespace ILoveGraphics.Renderer
 
             // 三角形三边
             var sides = new Vector4[]{
-                v[1] - v[0],
+                v[1] - v[0],      
                 v[2] - v[1],
                 v[0] - v[2]
             };
