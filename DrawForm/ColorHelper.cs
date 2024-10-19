@@ -1,4 +1,4 @@
-﻿using ILoveGraphics.Object;
+﻿using ILoveGraphics.Resources;
 using MatrixCore;
 
 namespace DrawForm

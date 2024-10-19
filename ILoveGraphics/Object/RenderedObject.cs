@@ -1,4 +1,5 @@
-﻿using ILoveGraphics.Shader;
+﻿using ILoveGraphics.Resources;
+using ILoveGraphics.Shader;
 using MatrixCore;
 
 namespace ILoveGraphics.Object
@@ -37,7 +38,7 @@ namespace ILoveGraphics.Object
             {
                 Scale = Vector4.One * 2,
             },
-            Shader = new StandardShader
+            Shader = new StandardPixelShader
             {
                 BaseColor = new Vector4(1),
                 // Roughness = 8,
@@ -56,7 +57,7 @@ namespace ILoveGraphics.Object
             {
                 Scale = Vector4.One * 5
             },
-            Shader = new StandardShader
+            Shader = new StandardPixelShader
             {
                 SpecularColor = Vector4.One * 0.85f,
             }
@@ -70,13 +71,13 @@ namespace ILoveGraphics.Object
         /// <summary>
         /// 着色器
         /// </summary>
-        public IShader Shader { get; set; }
+        public IPixelShader Shader { get; set; }
 
-        public RenderedObject(Mesh mesh) : this(mesh, new StandardShader())
+        public RenderedObject(Mesh mesh) : this(mesh, new StandardPixelShader())
         {
 
         }
-        public RenderedObject(Mesh mesh, IShader shader)
+        public RenderedObject(Mesh mesh, IPixelShader shader)
         {
             Mesh = mesh;
             Shader = shader;

@@ -54,6 +54,10 @@ public struct Vector4
     {
         return new Vector4(left.X * right.X, left.Y * right.Y, left.Z * right.Z, left.W * right.W);
     }
+    public static Vector4 Lerp(Vector4 a, Vector4 b, float t)
+    {
+        return (1 - t) * a + t * b;
+    }
     #endregion
 
     #region 常用向量

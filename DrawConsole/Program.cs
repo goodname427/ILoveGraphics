@@ -8,11 +8,6 @@ Console.WriteLine("Press Enter To Start!");
 Console.ReadLine();
 Console.Clear();
 
-// 屏幕
-var screen = new Screen(
-   new ConsoleScreenDrawer(), Console.WindowWidth / 2, Console.WindowHeight
-);
-
 RenderedScene.RenderedObjects.AddRange(new RenderedObject[]
 {
     //RenderedObject.Cube1,
@@ -28,7 +23,10 @@ RenderedScene.RenderedObjects.AddRange(new RenderedObject[]
     //}
 });
 
-RenderedScene.SetDefaultRenderArgs(screen);
+RenderedScene.SetDefaultRenderArgs(
+    new Screen(Console.WindowWidth / 2, Console.WindowHeight), 
+    new ConsoleScreenDrawer()
+);
 
 while (true)
 {

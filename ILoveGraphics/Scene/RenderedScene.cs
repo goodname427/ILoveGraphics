@@ -11,7 +11,7 @@ namespace ILoveGraphics.Test
         /// <summary>
         /// 场景中的相机
         /// </summary>
-        public static Camera? Camera { get; set; }
+        public static RenderPass? Pass { get; set; }
         /// <summary>
         /// 场景中需要渲染的物体
         /// </summary>
@@ -46,7 +46,7 @@ namespace ILoveGraphics.Test
         /// 设置默认数据
         /// </summary>
         /// <param name="screen"></param>
-        public static void SetDefaultRenderArgs(Screen screen)
+        public static void SetDefaultRenderArgs(Screen screen, IScreenDrawer screenDrawer)
         {
             // 光照
             Lights.AddRange(new BaseLight[]{
@@ -58,7 +58,7 @@ namespace ILoveGraphics.Test
             });
 
             // 相机
-            Camera = new Camera(screen)
+            var camera = new Camera(screen)
             {
                 FieldOfView = 90,
                 Transform = new()
@@ -66,6 +66,8 @@ namespace ILoveGraphics.Test
                     Position = new(0, 0, -10f),
                 },
             };
+
+            Pass = new RenderPass(screen, camera, screenDrawer);
 
             // 运行信息
             CurrentRunInfo.FrameCount = 0;
@@ -102,9 +104,10 @@ namespace ILoveGraphics.Test
             }
 
             // 渲染
-            Camera?.Render(RenderedObjects, $"""
-                resolution: ({Camera.Screen.Width}, {Camera.Screen.Height}, {Camera.Screen.Width * Camera.Screen.Width})
-                fps: {CurrentRunInfo.FPS:F2}
+            Pass?.Draw(RenderedObjects, $"""
+                resolution: ({Pass.Screen.Width}, {Pass.Screen.Height}, {Pass.Screen.Width * Pass.Screen.Width})
+                average fps: {CurrentRunInfo.FPS:F2}
+                realtime fps: {1 / CurrentRunInfo.DeltaTime:F2}
                 deltaTime: {CurrentRunInfo.DeltaTime * 1000:F2} ms
                 message: {Message}
                 """);

@@ -3,6 +3,7 @@
 using ILoveGraphics.Light;
 using ILoveGraphics.Object;
 using ILoveGraphics.Renderer;
+using ILoveGraphics.Resources;
 using ILoveGraphics.Shader;
 using ILoveGraphics.Test;
 using MatrixCore;
@@ -21,7 +22,7 @@ namespace DrawForm
             {
                 Scale = Vector4.One * 4
             },
-            Shader = new StandardShader
+            Shader = new StandardPixelShader
             {
                 SpecularColor = new Vector4(1, 1, 1, 1) * 0.85f,
                 Texture = ColorHelper.GetTexture(Mesh.Path + "Spot\\spot_texture.png")
@@ -37,7 +38,7 @@ namespace DrawForm
                 Scale = Vector4.One * 2,
                 EulerAngle = new Vector4(0, 90, 0)
             },
-            Shader = new StandardShader
+            Shader = new StandardPixelShader
             {
                 SpecularColor = new Vector4(1, 1, 1, 1) * 0.85f,
                 Texture = ColorHelper.GetTexture(Mesh.Path + "Prince\\beast_Base_Color.png")
@@ -107,13 +108,13 @@ namespace DrawForm
 #else
                 this;
 #endif
-            var screen = new ILoveGraphics.Renderer.Screen(screenDrawer, (int)(Width / _scale), (int)(Height / _scale));
+            var screen = new ILoveGraphics.Renderer.Screen((int)(Width / _scale), (int)(Height / _scale));
 
             RenderedScene.RenderedObjects.AddRange(new RenderedObject[]
             {
                 Spot
             });
-            RenderedScene.SetDefaultRenderArgs(screen);
+            RenderedScene.SetDefaultRenderArgs(screen, screenDrawer);
 
             Lbl_1.Visible = false;
             Btn_Start.Visible = false;
@@ -150,9 +151,9 @@ namespace DrawForm
 
         private void FormScreenDrawer_MouseClick(object sender, MouseEventArgs e)
         {
-            if (RenderedScene.Camera is null)
+            if (RenderedScene.Pass?.Camera is null)
                 return;
-            RenderedScene.Camera.Transform.Position = -RenderedScene.Camera.Transform.Position;
+            RenderedScene.Pass.Camera.Transform.Position = -RenderedScene.Pass.Camera.Transform.Position;
         }
 
         private void FormScreenDrawer_KeyDown(object sender, KeyEventArgs e)
